@@ -15,7 +15,11 @@ var StudyAreaBoundary = L.geoJSON(StudyArea, {
 
 var SubwayLines = L.geoJSON(BronxSubwayLines, {
   color: "BLACK",
-  weight: 5,
+  weight: 2,
+}).addTo(map);
+
+var PopulationCensusTracts = L.geoJSON(StudyAreaCensusTracts,
+  { fillcolor: "BLUE"
 }).addTo(map);
 
 var SubwayPoints = {
@@ -29,7 +33,7 @@ var SubwayStationPoints  = L.geoJSON(BronxSubwayStations, {
    pointToLayer: function (feature, latlng) {
      var marker = L.circleMarker(latlng, SubwayPoints)
      // need to find a way to make space between name of station and line
-         .bindPopup(feature.properties.name +  feature.properties.line, {offset: [0, -6]});
+         .bindPopup(feature.properties.name + "<br>" + feature.properties.line);
          marker.on('mouseover', function (e) {
              this.openPopup();
          });
@@ -167,13 +171,25 @@ var overlays = {
   "Retail": RetailOverlay,
   "Storage": StorageOverlay,
   "Factory": FactoryOverlay,
-  "Rezoned": RezonedAreaOverlay,
+  "Rezoned Area": RezonedAreaOverlay,
 };
 
 L.control.layers({}, overlays).addTo(map);
 
-// $(document).ready(function(){
-// $("LandUse").click(function(){
-//         $("#legend").hide();
-//     });
-// });
+// // add event listeners for overlayadd and overlayremove
+// map.on('overlayadd', handleLayerToggle);
+// map.on('overlayremove', handleLayerToggle);
+//
+// function handleLayerToggle(eventLayer) {
+// // get the name of the layergroup, and whether it is being added or removed
+// var type = eventLayer.type;
+// var name = eventLayer.name;
+//
+// // if being added, show the corresponding legend
+// // else, hide it.
+// if (eventLayer.type === 'overlayadd') {
+//  $('#' + name + '-legend').show();
+// } else {
+//  $('#' + name + '-legend').hide();
+// }
+// }
