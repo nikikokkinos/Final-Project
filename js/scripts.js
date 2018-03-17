@@ -18,9 +18,63 @@ var SubwayLines = L.geoJSON(BronxSubwayLines, {
   weight: 2,
 }).addTo(map);
 
-var PopulationCensusTracts = L.geoJSON(StudyAreaCensusTracts,
-  { fillcolor: "BLUE"
+// Creating Color Based on Change Feature in StudyAreaCensusTracts
+function getColor(Change) {
+		return Change < 0 ? '#d7191c':
+				Change > 0  ? '#fdae61' :
+				Change > 10  ? '#ffffbf' :
+				Change > 25  ? '#a6d96a' :
+				Change > 26  ? '#1a9641' :
+							'#FFEDA0';
+	}
+
+var PopulationCensusTracts = L.geoJSON(StudyAreaCensusTracts, {
+  style: 	function(feature) {
+  		return {
+  			weight: 2,
+  			opacity: 1,
+  			color: 'white',
+  			dashArray: '3',
+  			fillOpacity: 0.7,
+  			fillColor: getColor(feature.properties.Change)
+  		};
+  	},
 }).addTo(map);
+
+// Creating Highlight on Hover
+function highlightFeature(e) {
+    var layer = e.target;
+
+    layer.setStyle({
+        weight: 5,
+        color: '#666',
+        dashArray: '',
+        fillOpacity: 0.7
+    });
+
+    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+        layer.bringToFront();
+    }
+}
+
+var geojson;
+
+function resetHighlight(e) {
+  geojson.resetStyle(e.target);
+  info.update();
+}
+
+function zoomToFeature(e) {
+  map.fitBounds(e.target.getBounds());
+}
+
+function onEachFeature(feature, layer) {
+  layer.on({
+    mouseover: highlightFeature,
+    mouseout: resetHighlight,
+    click: zoomToFeature
+  });
+}
 
 var SubwayPoints = {
     radius: 10,
@@ -175,21 +229,3 @@ var overlays = {
 };
 
 L.control.layers({}, overlays).addTo(map);
-
-// // add event listeners for overlayadd and overlayremove
-// map.on('overlayadd', handleLayerToggle);
-// map.on('overlayremove', handleLayerToggle);
-//
-// function handleLayerToggle(eventLayer) {
-// // get the name of the layergroup, and whether it is being added or removed
-// var type = eventLayer.type;
-// var name = eventLayer.name;
-//
-// // if being added, show the corresponding legend
-// // else, hide it.
-// if (eventLayer.type === 'overlayadd') {
-//  $('#' + name + '-legend').show();
-// } else {
-//  $('#' + name + '-legend').hide();
-// }
-// }
