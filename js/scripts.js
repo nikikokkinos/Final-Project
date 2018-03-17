@@ -1,7 +1,7 @@
-var defaultCenter = [40.817155,-73.922968];
-var defaultZoom = 14;
-
-var map = L.map('map').setView(defaultCenter, defaultZoom);
+var map = L.map('map',{
+  center: [40.817155,-73.922968],
+  zoom: 14,
+});
 
 L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -17,14 +17,6 @@ var SubwayLines = L.geoJSON(BronxSubwayLines, {
   color: "BLACK",
   weight: 5,
 }).addTo(map);
-
-// var Stations = L.geoJSON(SubwayStations, {
-//   radius: 10,
-//   opacity: 1,
-//   fillColor: "BlACK",
-//   fillOpacity: 0.5,
-//   weight: 1,
-// }).addTo(map);
 
 var SubwayPoints = {
     radius: 10,
@@ -48,44 +40,6 @@ var SubwayStationPoints  = L.geoJSON(BronxSubwayStations, {
       return marker;
   }
 }).addTo(map);
-
-// var LU_Map = L.geoJSON(PlutoData, {
-//       style: function(feature) {
-//
-//           return {
-//             color: 'BLACK',
-//             fillColor: lookupLandUse(feature.properties.LandUse).color,
-//             fillOpacity: 0.8,
-//             weight: 1,
-//           }
-//       },
-//
-//     onEachFeature: function(feature, layer) {
-//       const description = lookupLandUse(feature.properties.LandUse).description;
-//
-//       layer.bindPopup(`${feature.properties.Address}<br/>${description}`, {
-//         closeButton: false,
-//         minWidth: 60,
-//         offset: [0, -10]
-//       });
-//       layer.on('mouseover', function (e) {
-//         this.openPopup();
-//
-//         e.target.setStyle({
-//           weight: 3,
-//           color: '#FFF',
-//         });
-//
-//         if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-//             layer.bringToFront();
-//         }
-//       });
-//       layer.on('mouseout', function (e) {
-//         this.closePopup();
-//         LU_Map.resetStyle(e.target);
-//       });
-//     }
-//   }).addTo(map);
 
 var OfficePoints = {
     radius: 10,
@@ -202,13 +156,18 @@ var FactoryOverlay = L.geoJSON(NewFactoryFloorArea, {
  }
 })
 
+var RezonedAreaOverlay = L.geoJSON(ZoningMapAmendments, {
+  fillcolor: "#2b2e5e",
+  fillOpacity: .5,
+})
+
 var overlays = {
-  // "LandUse": LU_Map,
   "Offices": OfficeOverlay,
   "Residential": ResidentialOverlay,
   "Retail": RetailOverlay,
   "Storage": StorageOverlay,
   "Factory": FactoryOverlay,
+  "Rezoned": RezonedAreaOverlay,
 };
 
 L.control.layers({}, overlays).addTo(map);
