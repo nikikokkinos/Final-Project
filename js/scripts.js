@@ -19,62 +19,123 @@ var SubwayLines = L.geoJSON(BronxSubwayLines, {
 }).addTo(map);
 
 // Creating Color Based on Change Feature in StudyAreaCensusTracts
+
 function getColor(Change) {
-		return Change < 0 ? '#d7191c':
-				Change > 0  ? '#fdae61' :
-				Change > 10  ? '#ffffbf' :
-				Change > 25  ? '#a6d96a' :
-				Change > 26  ? '#1a9641' :
+		return Change < 0 ? '#d7191c' :
+				Change < 6  ? '#fdae61' :
+				Change < 11  ? '#ffffbf' :
+				Change < 21  ? '#a6d96a' :
+        Change < 200 ? '#1a9641' :
 							'#FFEDA0';
 	}
 
-var PopulationCensusTracts = L.geoJSON(StudyAreaCensusTracts, {
-  style: 	function(feature) {
-  		return {
-  			weight: 2,
-  			opacity: 1,
-  			color: 'white',
-  			dashArray: '3',
-  			fillOpacity: 0.7,
-  			fillColor: getColor(feature.properties.Change)
-  		};
-  	},
-}).addTo(map);
+	function style(feature) {
+		return {
+			weight: 2,
+			opacity: 1,
+			color: 'white',
+			dashArray: '3',
+			fillOpacity: 0.7,
+			fillColor: getColor(feature.properties.Change)
+		};
+	}
 
-// Creating Highlight on Hover
-function highlightFeature(e) {
-    var layer = e.target;
+	function highlightFeature(e) {
+		var layer = e.target;
 
-    layer.setStyle({
-        weight: 5,
-        color: '#666',
-        dashArray: '',
-        fillOpacity: 0.7
-    });
+		layer.setStyle({
+			weight: 5,
+			color: '#666',
+			dashArray: '',
+			fillOpacity: 0.7
+		});
 
-    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-        layer.bringToFront();
-    }
-}
+		if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+			layer.bringToFront();
+		}
 
-var geojson;
+		info.update(layer.feature.properties);
+	}
 
-function resetHighlight(e) {
-  geojson.resetStyle(e.target);
-  info.update();
-}
+	var CensusTractsGeojson;
 
-function zoomToFeature(e) {
-  map.fitBounds(e.target.getBounds());
-}
+	function resetHighlight(e) {
+		CensusTractsGeojson.resetStyle(e.target);
+		info.update();
+	}
 
-function onEachFeature(feature, layer) {
-  layer.on({
-    mouseover: highlightFeature,
-    mouseout: resetHighlight,
-    click: zoomToFeature
-  });
-}
+	function zoomToFeature(e) {
+		map.fitBounds(e.target.getBounds());
+	}
+
+	function onEachFeature(feature, layer) {
+		layer.on({
+			mouseover: highlightFeature,
+			mouseout: resetHighlight,
+			click: zoomToFeature
+		});
+	}
+
+	CensusTractsGeojson = L.geoJson(StudyAreaCensusTracts, {
+		style: style,
+		onEachFeature: onEachFeature
+	}).addTo(map);
+
+// function getColor(Change) {
+// 		return Change < 0 ? '#d7191c':
+// 				Change > 0  ? '#fdae61' :
+// 				Change > 10  ? '#ffffbf' :
+// 				Change > 25  ? '#a6d96a' :
+// 				Change > 26  ? '#1a9641' :
+// 							'#FFEDA0';
+// 	}
+//
+// function highlightFeature(e) {
+//       var layer = e.target;
+//
+//       layer.setStyle({
+//           weight: 5,
+//           color: '#666',
+//           dashArray: '',
+//           fillOpacity: 0.7
+//       });
+//
+//       if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+//           layer.bringToFront();
+//       }
+//   }
+//
+//   var PopulationCensusTracts;
+//
+// 	function resetHighlight(e) {
+// 		geojson.resetStyle(e.target);
+// 		info.update();
+// 	}
+//
+// 	function zoomToFeature(e) {
+// 		map.fitBounds(e.target.getBounds());
+// 	}
+//
+// 	function onEachFeature(feature, layer) {
+// 		layer.on({
+// 			mouseover: highlightFeature,
+// 			mouseout: resetHighlight,
+// 			click: zoomToFeature
+// 		});
+// 	}
+//
+//   PopulationCensusTracts = L.geoJSON(StudyAreaCensusTracts, {
+//   style: 	function(feature) {
+//   		return {
+//   			weight: 2,
+//   			opacity: 1,
+//   			color: 'white',
+//   			dashArray: '3',
+//   			fillOpacity: 0.7,
+//   			fillColor: getColor(feature.properties.Change)
+//   		};
+//   	},
+// }).addTo(map);
 
 var SubwayPoints = {
     radius: 10,
