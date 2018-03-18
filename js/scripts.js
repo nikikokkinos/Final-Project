@@ -1,24 +1,29 @@
 var map = L.map('map',{
   center: [40.817155,-73.922968],
   zoom: 14,
+  // layers: [CensusTractsBaseLayer],
 });
 
 L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-var StudyAreaBoundary = L.geoJSON(StudyArea, {
-  fillColor: "none",
-  color: "#ff8049",
-  weight: 3,
-}).addTo(map);
+// Control that Shows CT Info on Hover
+var info = L.control();
 
-var SubwayLines = L.geoJSON(BronxSubwayLines, {
-  color: "BLACK",
-  weight: 2,
-}).addTo(map);
+info.onAdd = function (map) {
+  this._div = L.DomUtil.create('div', 'info');
+  this.update();
+  return this._div;
+};
 
-// Creating Color Based on Change Feature in StudyAreaCensusTracts
+info.update = function (props) {
+  this._div.innerHTML = '<h4>Population % Change <br> Between ACS Survey Years <br> 2006 - 2010 & 2012 - 2016</h4>' +
+  (props ? '<b>' + 'Census Tract' + props.CTLabel + '</b><br />' + props.Change + '% Change'
+    : 'Hover Over a Census Tract');
+};
+
+info.addTo(map);
 
 function getColor(Change) {
 		return Change < 0 ? '#d7191c' :
@@ -76,66 +81,23 @@ function getColor(Change) {
 		});
 	}
 
-	CensusTractsGeojson = L.geoJson(StudyAreaCensusTracts, {
+CensusTractsGeojson = L.geoJson(StudyAreaCensusTracts, {
 		style: style,
 		onEachFeature: onEachFeature
-	}).addTo(map);
+}).addTo(map);
+//
+// var CensusTractsBaseLayer = CensusTractsGeojson
 
-// function getColor(Change) {
-// 		return Change < 0 ? '#d7191c':
-// 				Change > 0  ? '#fdae61' :
-// 				Change > 10  ? '#ffffbf' :
-// 				Change > 25  ? '#a6d96a' :
-// 				Change > 26  ? '#1a9641' :
-// 							'#FFEDA0';
-// 	}
-//
-// function highlightFeature(e) {
-//       var layer = e.target;
-//
-//       layer.setStyle({
-//           weight: 5,
-//           color: '#666',
-//           dashArray: '',
-//           fillOpacity: 0.7
-//       });
-//
-//       if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-//           layer.bringToFront();
-//       }
-//   }
-//
-//   var PopulationCensusTracts;
-//
-// 	function resetHighlight(e) {
-// 		geojson.resetStyle(e.target);
-// 		info.update();
-// 	}
-//
-// 	function zoomToFeature(e) {
-// 		map.fitBounds(e.target.getBounds());
-// 	}
-//
-// 	function onEachFeature(feature, layer) {
-// 		layer.on({
-// 			mouseover: highlightFeature,
-// 			mouseout: resetHighlight,
-// 			click: zoomToFeature
-// 		});
-// 	}
-//
-//   PopulationCensusTracts = L.geoJSON(StudyAreaCensusTracts, {
-//   style: 	function(feature) {
-//   		return {
-//   			weight: 2,
-//   			opacity: 1,
-//   			color: 'white',
-//   			dashArray: '3',
-//   			fillOpacity: 0.7,
-//   			fillColor: getColor(feature.properties.Change)
-//   		};
-//   	},
-// }).addTo(map);
+var StudyAreaBoundary = L.geoJSON(StudyArea, {
+    fillColor: "none",
+    color: "#191d5b",
+    weight: 3,
+}).addTo(map);
+
+var SubwayLines = L.geoJSON(BronxSubwayLines, {
+    color: "BLACK",
+    weight: 2,
+}).addTo(map);
 
 var SubwayPoints = {
     radius: 10,
@@ -279,6 +241,10 @@ var RezonedAreaOverlay = L.geoJSON(ZoningMapAmendments, {
   fillcolor: "#2b2e5e",
   fillOpacity: .5,
 })
+
+// var BaseMaps = {
+//   "CensusTracts": CensusTractsBaseLayer,
+// };
 
 var overlays = {
   "Offices": OfficeOverlay,
