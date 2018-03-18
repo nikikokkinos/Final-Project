@@ -19,7 +19,7 @@ info.onAdd = function (map) {
 
 info.update = function (props) {
   this._div.innerHTML = '<h4>Population % Change <br> Between ACS Survey Years <br> 2006 - 2010 & 2012 - 2016</h4>' +
-  (props ? '<b>' + 'Census Tract' + props.CTLabel + '</b><br />' + props.Change + '% Change'
+  (props ? '<b>' + 'Census Tract' + " " + props.CTLabel + '</b><br />' + props.Change + '% Change'
     : 'Hover Over a Census Tract');
 };
 
@@ -92,8 +92,8 @@ var legend = L.control({position: 'bottomright'});
 
 legend.onAdd = function (map) {
 
-  var div = L.DomUtil.create('div', 'info legend'),               ]
-    grades = [0, 10, 20, 50, 100, 200, 500, 100],
+  var div = L.DomUtil.create('div', 'info legend'),
+    grades = [0, 10, 20, 50, 100, 200, 500, 1000],
     labels = [],
     from, to;
 
@@ -111,7 +111,6 @@ legend.onAdd = function (map) {
 };
 
 legend.addTo(map);
-
 
 var StudyAreaBoundary = L.geoJSON(StudyArea, {
     fillColor: "none",
