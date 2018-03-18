@@ -1,17 +1,49 @@
+header {
+  position: absolute;
+  height: 30%;
+  width: 100%;
+  background: url("http://www.rantplaces.com/wp-content/uploads/2015/04/TheBronx.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: right top;
+}
+
+h1 {
+  text-align: left;
+  padding: 0px 20px 10px 20px;
+  font-size: 50px;
+  color: white;
+  margin-top: 25px;
+}
+
 #map {
   position: absolute;
-  top: 50px;
+  top: 100px;
   right: 0;
   bottom: 0;
   left: 0;
 }
 
-#legend {
-    position: absolute;
-    height: 100%;
-    width: 20%;
-    top: 50px;
-    left; 0;
-    background: white;
-    padding: 0 15px 15px 15px;
+/* header {
+text-align: center;
+background: url("https://c2.staticflickr.com/4/3903/15056406677_03a39d510e_b.jpg");
+background-repeat: no-repeat;
+background-size: cover;
+font-family: monospace;
+} */
+
+#PointLegend {
+  float: right;
+  z-index: 2000;
+  background: #slategrey;
+  padding: 12px;
+  border-radius: 10px;
+}
+
+.colorBox {
+  z-index: 2000;
+  radius: 10,
+  opacity: 1,
+  fillOpacity: 0.5,
+  weight: .05,
 }

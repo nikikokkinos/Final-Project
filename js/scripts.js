@@ -1,7 +1,6 @@
 var map = L.map('map',{
   center: [40.817155,-73.922968],
   zoom: 14,
-  // layers: [CensusTractsBaseLayer],
 });
 
 L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png', {
@@ -9,22 +8,23 @@ L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.p
 }).addTo(map);
 
 // Control that Shows CT Info on Hover
-var info = L.control();
+var CTinfo = L.control();
 
-info.onAdd = function (map) {
+CTinfo.onAdd = function (map) {
   this._div = L.DomUtil.create('div', 'info');
   this.update();
   return this._div;
 };
 
-info.update = function (props) {
+CTinfo.update = function (props) {
   this._div.innerHTML = '<h4>Population % Change <br> Between ACS Survey Years <br> 2006 - 2010 & 2012 - 2016</h4>' +
   (props ? '<b>' + 'Census Tract' + " " + props.CTLabel + '</b><br />' + props.Change + '% Change'
     : 'Hover Over a Census Tract');
 };
 
-info.addTo(map);
+CTinfo.addTo(map);
 
+// Adding CT Colors Based on Change Property
 function getColor(Change) {
 		return Change < 1 ? '#d7191c' :
 				Change < 6  ? '#fdae61' :
@@ -45,6 +45,7 @@ function getColor(Change) {
 		};
 	}
 
+  // Creating Highlight on Hover
 	function highlightFeature(e) {
 		var layer = e.target;
 
@@ -62,10 +63,10 @@ function getColor(Change) {
 		info.update(layer.feature.properties);
 	}
 
-	var CensusTractsGeojson;
+	var CensusTractsOverlayLayer;
 
 	function resetHighlight(e) {
-		CensusTractsGeojson.resetStyle(e.target);
+		CensusTractsOverlayLayer.resetStyle(e.target);
 		info.update();
 	}
 
@@ -81,16 +82,15 @@ function getColor(Change) {
 		});
 	}
 
-CensusTractsGeojson = L.geoJson(StudyAreaCensusTracts, {
+CensusTractsOverlayLayer = L.geoJson(StudyAreaCensusTracts, {
 		style: style,
 		onEachFeature: onEachFeature
 }).addTo(map);
-//
-// var CensusTractsBaseLayer = CensusTractsGeojson
 
-var legend = L.control({position: 'bottomright'});
+  // Creating Choropleth legend
+var Choroplethlegend = L.control({position: 'bottomright'});
 
-legend.onAdd = function (map) {
+Choroplethlegend.onAdd = function (map) {
 
   var div = L.DomUtil.create('div', 'info legend'),
     grades = [-23, 1, 5, 10, 20, 160],
@@ -110,7 +110,7 @@ legend.onAdd = function (map) {
   return div;
 };
 
-legend.addTo(map);
+Choroplethlegend.addTo(map);
 
 var StudyAreaBoundary = L.geoJSON(StudyArea, {
     fillColor: "none",
@@ -266,11 +266,8 @@ var RezonedAreaOverlay = L.geoJSON(ZoningMapAmendments, {
   fillOpacity: .5,
 })
 
-// var BaseMaps = {
-//   "CensusTracts": CensusTractsBaseLayer,
-// };
-
 var overlays = {
+  "CensusTracts": CensusTractsOverlayLayer,
   "Offices": OfficeOverlay,
   "Residential": ResidentialOverlay,
   "Retail": RetailOverlay,
@@ -280,3 +277,24 @@ var overlays = {
 };
 
 L.control.layers({}, overlays).addTo(map);
+
+// console.log(PointLegend)
+//
+// var PointLegend = {
+//   "Office": OfficeOverlay,
+//   "Residential": ResidentialOverlay,
+//   "Retail": RetailOverlay,
+//   "Storage": StorageOverlay,
+//   "Factory": FactoryOverlay,
+// };
+//
+// PointLegend.addTo(map);
+
+// Controls for Legends on Overlay Add & Remove Events
+// map.on('overlayadd', function (e) {
+//   alert(e.name+"was just turned on");
+// });
+//
+// map.on('overlayremove', function (e) {
+//   alert(e.name+"was just turned off");
+// });
