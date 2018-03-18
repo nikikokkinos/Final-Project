@@ -26,11 +26,11 @@ info.update = function (props) {
 info.addTo(map);
 
 function getColor(Change) {
-		return Change < 0 ? '#d7191c' :
+		return Change < 1 ? '#d7191c' :
 				Change < 6  ? '#fdae61' :
 				Change < 11  ? '#ffffbf' :
 				Change < 21  ? '#a6d96a' :
-        Change < 200 ? '#1a9641' :
+        Change < 160 ? '#1a9641' :
 							'#FFEDA0';
 	}
 
@@ -93,11 +93,11 @@ var legend = L.control({position: 'bottomright'});
 legend.onAdd = function (map) {
 
   var div = L.DomUtil.create('div', 'info legend'),
-    grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+    grades = [-23, 1, 5, 10, 20, 160],
     labels = [],
     from, to;
 
-  for (var i = 0; i < grades.length; i++) {
+  for (var i = -23; i < grades.length; i++) {
     from = grades[i];
     to = grades[i + 1];
 
