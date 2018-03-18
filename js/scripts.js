@@ -88,6 +88,31 @@ CensusTractsGeojson = L.geoJson(StudyAreaCensusTracts, {
 //
 // var CensusTractsBaseLayer = CensusTractsGeojson
 
+var legend = L.control({position: 'bottomright'});
+
+legend.onAdd = function (map) {
+
+  var div = L.DomUtil.create('div', 'info legend'),               ]
+    grades = [0, 10, 20, 50, 100, 200, 500, 100],
+    labels = [],
+    from, to;
+
+  for (var i = 0; i < grades.length; i++) {
+    from = grades[i];
+    to = grades[i + 1];
+
+    labels.push(
+      '<i style="background:' + getColor(from + 1) + '"></i> ' +
+      from + (to ? '&ndash;' + to : '+'));
+  }
+
+  div.innerHTML = labels.join('<br>');
+  return div;
+};
+
+legend.addTo(map);
+
+
 var StudyAreaBoundary = L.geoJSON(StudyArea, {
     fillColor: "none",
     color: "#191d5b",
