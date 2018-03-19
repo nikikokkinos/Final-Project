@@ -241,7 +241,7 @@ var StorageOverlay = L.geoJSON(NewStorageFloorArea, {
 var FactoryPoints = {
   radius: 10,
   opacity: 1,
-  fillColor: "#262626",
+  fillColor: "#d36ff4",
   fillOpacity: 0.5,
   weight: .05,
 };
