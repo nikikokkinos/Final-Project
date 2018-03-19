@@ -1,10 +1,44 @@
 var map = L.map('map',{
   center: [40.817155,-73.922968],
   zoom: 14,
+  // layers: [CensusTracts, Office, Residential, Retail, Storage, Factory, RezonedArea],
 });
 
 L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+var StudyAreaBoundary = L.geoJSON(StudyArea, {
+    fillColor: "none",
+    color: "#191d5b",
+    weight: 3,
+}).addTo(map);
+
+var SubwayLines = L.geoJSON(BronxSubwayLines, {
+    color: "BLACK",
+    weight: 2,
+}).addTo(map);
+
+var SubwayPoints = {
+    radius: 10,
+    color: "BLACK",
+    fillColor: "BLACK",
+    weight: 1,
+};
+
+var SubwayStationPoints  = L.geoJSON(BronxSubwayStations, {
+   pointToLayer: function (feature, latlng) {
+     var marker = L.circleMarker(latlng, SubwayPoints)
+         .bindPopup(feature.properties.name + "<br>" + feature.properties.line);
+         marker.on('mouseover', function (e) {
+             this.openPopup();
+         });
+         marker.on('mouseout', function (e) {
+             this.closePopup();
+         });
+
+      return marker;
+  }
 }).addTo(map);
 
 // Control that Shows CT Info on Hover
@@ -111,40 +145,6 @@ CensusTractsOverlayLayer = L.geoJson(StudyAreaCensusTracts, {
 // };
 //
 // Choroplethlegend.addTo(map);
-
-var StudyAreaBoundary = L.geoJSON(StudyArea, {
-    fillColor: "none",
-    color: "#191d5b",
-    weight: 3,
-}).addTo(map);
-
-var SubwayLines = L.geoJSON(BronxSubwayLines, {
-    color: "BLACK",
-    weight: 2,
-}).addTo(map);
-
-var SubwayPoints = {
-    radius: 10,
-    color: "BLACK",
-    fillColor: "BLACK",
-    weight: 1,
-};
-
-var SubwayStationPoints  = L.geoJSON(BronxSubwayStations, {
-   pointToLayer: function (feature, latlng) {
-     var marker = L.circleMarker(latlng, SubwayPoints)
-     // need to find a way to make space between name of station and line
-         .bindPopup(feature.properties.name + "<br>" + feature.properties.line);
-         marker.on('mouseover', function (e) {
-             this.openPopup();
-         });
-         marker.on('mouseout', function (e) {
-             this.closePopup();
-         });
-
-      return marker;
-  }
-}).addTo(map);
 
 var OfficePoints = {
     radius: 10,
@@ -265,36 +265,62 @@ var RezonedAreaOverlay = L.geoJSON(ZoningMapAmendments, {
   fillColor: "#2b2e5e",
   fillOpacity: .5,
   color: "#2b2e5e",
+  // Trying to add a popup on mouseover of layer
+    // .bindPopup(feature.properties.PROJECT_NA)
+    // RezonedAreaOverlay.on('mouseover', function (e) {
+    //     this.openPopup();
+    // });
+    // RezonedAreaOverlay.on('mouseout', function (e) {
+    //     this.closePopup();
+    // });
+    //
+    // return RezonedAreaOverlay;
 })
 
-
+// var CensusTracts = L.layerGroup([CensusTractsOverlayLayer]);
+// var Office = L.layerGroup([OfficeOverlay]);
+// var Residential = L.layerGroup([ResidentialOverlay]);
+// var Retail = L.layerGroup([RetailOverlay]);
+// var Storage = L.layerGroup([StorageOverlay]);
+// var Factory = L.layerGroup([FactoryOverlay]);
+// var RezonedArea = L.layerGroup([RezonedAreaOverlay]);
 
 var overlays = {
-  "CensusTracts": CensusTractsOverlayLayer,
-  "Office": OfficeOverlay,
-  "Residential": ResidentialOverlay,
-  "Retail": RetailOverlay,
-  "Storage": StorageOverlay,
-  "Factory": FactoryOverlay,
-  "Rezoned Area": RezonedAreaOverlay,
+  "Population Change": CensusTractsOverlayLayer,
+  "New Office": OfficeOverlay,
+  "New Residential": ResidentialOverlay,
+  "New Retail": RetailOverlay,
+  "New Storage": StorageOverlay,
+  "New Factory": FactoryOverlay,
+  "Zoning Map Amendments": RezonedAreaOverlay,
 };
 
 L.control.layers({}, overlays).addTo(map);
 
+// L.control.layers({}, {
+//   Census_Tracts: CensusTracts,
+//   New_Office: Office,
+//   New_Residential: Residential,
+//   New_Retail: Retail,
+//   New_Storage: Storage,
+//   New_Factory: Factory,
+//   New_Rezoned_Area: RezonedArea
+// }).addTo(map);
+
 // add event listeners for overlayadd and overlayremove
-map.on('overlayadd', handleLayerToggle);
-map.on('overlayremove', handleLayerToggle);
-
-function handleLayerToggle(eventLayer) {
-	// get the name of the layergroup, and whether it is being added or removed
-  var type = eventLayer.type;
-  var name = eventLayer.name;
-
-	// if being added, show the corresponding legend
-  // else, hide it.
-  if (eventLayer.type === 'overlayadd') {
-    $('#' + name + '-legend').show();
-  } else {
-    $('#' + name + '-legend').hide();
-  }
-}
+// map.on('overlayadd', handleLayerToggle);
+// map.on('overlayremove', handleLayerToggle);
+//
+// function handleLayerToggle(eventLayer) {
+// 	// get the name of the layergroup, and whether it is being added or removed
+//   var type = eventLayer.type;
+//   var name = eventLayer.name;
+//
+// 	// if being added, show the corresponding legend
+//   // else, hide it.
+//   if (eventLayer.type === 'overlayadd') {
+//     $('#' + name + '-legend').show();
+//   } else {
+//     $('#' + name + '-legend').hide();
+//   }
+// }
