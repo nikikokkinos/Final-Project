@@ -24,10 +24,27 @@ h1 {
   left: 0;
 }
 
-#legend {
+#OverlayLegend {
     position: absolute;
+    z-index: 1000;
     top: 10px;
     left: 100px;
     background: white;
     padding: 0 15px 15px 15px;
+}
+
+.LegendSymbol {
+  radius: 10;
+  opacity: 1;
+  fillOpacity: 0.5;
+  weight: .05;
+}
+
+.RezonedSymbol {
+  fillOpacity: .5;
+  color: "#2b2e5e";
+  top: 5%;
+  right: 10%;
+  left: 10%;
+  bottom: 5%;
 }
