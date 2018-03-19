@@ -26,11 +26,17 @@ h1 {
 
 #OverlayLegend {
     position: absolute;
+    float: left;
     z-index: 1000;
-    top: 10px;
-    left: 100px;
-    background: white;
-    padding: 0 15px 15px 15px;
+    top: 110px;
+    left: 50px;
+    background: rgba(255,255,255,0.8);
+    fillOpacity: 0.7;
+    padding: 5px 15px 15px 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    font: 14px, Arial, sans-serif;
+    color: #777;
 }
 
 .LegendSymbol {
@@ -48,3 +54,4 @@ h1 {
   left: 10%;
   bottom: 5%;
 }
+/* info {padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px;} .info h4 {margin: 0 0 5px; color: #777;} */
