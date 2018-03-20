@@ -43,6 +43,7 @@ h2 {
 #OverlayLegend {
     float: right;
     z-index: 1000;
+    margin: 0 5px 20px 0;
     background: #FFF;
     padding: 5px 15px 15px 15px;
     border-style: solid;

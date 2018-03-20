@@ -64,7 +64,7 @@ function getColor(Change) {
 				Change < 6  ? '#fdae61' :
 				Change < 11  ? '#ffffbf' :
 				Change < 21  ? '#a6d96a' :
-        Change < 160 ? '#1a9641' :
+        Change < 158 ? '#1a9641' :
 							'#FFEDA0';
 	}
 
@@ -122,35 +122,35 @@ CensusTractsOverlayLayer = L.geoJson(StudyAreaCensusTracts, {
 }).addTo(map);
 
 //  Creating Choropleth legend
-var Choroplethlegend = L.control({position: 'bottomright'});
-
-Choroplethlegend.onAdd = function (map) {
-
-  var div = L.DomUtil.create('div', 'info legend'),
-    grades = [-23, 1, 5, 10, 20, 160],
-    labels = [],
-    from, to;
-
-  for (var i = -23; i < grades.length; i++) {
-    from = grades[i];
-    to = grades[i + 1];
-
-    labels.push(
-      '<i style="background:' + getColor(from + 1) + '"></i> ' +
-      from + (to ? '&ndash;' + to : '+'));
-  }
-
-  div.innerHTML = labels.join('<br>');
-  return div;
-};
-
-Choroplethlegend.addTo(map);
+// var Choroplethlegend = L.control({position: 'bottomright'});
+//
+// Choroplethlegend.onAdd = function (map) {
+//
+//   var div = L.DomUtil.create('div', 'info legend'),
+//     grades = [-23, 1, 5, 10, 20, 160],
+//     labels = [],
+//     from, to;
+//
+//   for (var i = -23; i < grades.length; i++) {
+//     from = grades[i];
+//     to = grades[i + 1];
+//
+//     labels.push(
+//       '<i style="background:' + getColor(from + 1) + '"></i> ' +
+//       from + (to ? '&ndash;' + to : '+'));
+//   }
+//
+//   div.innerHTML = labels.join('<br>');
+//   return div;
+// };
+//
+// Choroplethlegend.addTo(map);
 
 var OfficePoints = {
     radius: 10,
-    opacity: 1,
+    weight: 1,
     fillColor: "ORANGE",
-    fillOpacity: 0.5,
+    fillOpacity: 1,
     weight: .05,
 };
 
@@ -171,9 +171,9 @@ var OfficeOverlay  = L.geoJSON(NewOfficeFloorArea, {
 
 var ResidentialPoints = {
   radius: 10,
-  opacity: 1,
+  weight: 1,
   fillColor: "YELLOW",
-  fillOpacity: 0.5,
+  fillOpacity: 1,
   weight: .05,
 };
 
@@ -194,9 +194,9 @@ var ResidentialOverlay = L.geoJSON(NewResidentialFloorArea, {
 
 var RetailPoints = {
   radius: 10,
-  opacity: 1,
+  weight: 1,
   fillColor: "RED",
-  fillOpacity: 0.5,
+  fillOpacity: 1,
   weight: .05,
 };
 
@@ -217,9 +217,9 @@ var RetailOverlay = L.geoJSON(NewRetailFloorArea, {
 
 var StoragePoints = {
   radius: 10,
-  opacity: 1,
+  weight: 1,
   fillColor: "#939393",
-  fillOpacity: 0.5,
+  fillOpacity: 1,
   weight: .05,
 };
 
@@ -240,9 +240,9 @@ var StorageOverlay = L.geoJSON(NewStorageFloorArea, {
 
 var FactoryPoints = {
   radius: 10,
-  opacity: 1,
+  weight: 1,
   fillColor: "#d36ff4",
-  fillOpacity: 0.5,
+  fillOpacity: 1,
   weight: .05,
 };
 
