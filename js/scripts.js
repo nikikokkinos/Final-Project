@@ -1,5 +1,5 @@
 var map = L.map('map',{
-  center: [40.817155,-73.922968],
+  center: [40.815141,-73.934169],
   zoom: 14,
   // layers: [CensusTracts, Office, Residential, Retail, Storage, Factory, RezonedArea],
 });
@@ -121,30 +121,30 @@ CensusTractsOverlayLayer = L.geoJson(StudyAreaCensusTracts, {
 		onEachFeature: onEachFeature
 }).addTo(map);
 
-  // Creating Choropleth legend
-// var Choroplethlegend = L.control({position: 'bottomright'});
-//
-// Choroplethlegend.onAdd = function (map) {
-//
-//   var div = L.DomUtil.create('div', 'info legend'),
-//     grades = [-23, 1, 5, 10, 20, 160],
-//     labels = [],
-//     from, to;
-//
-//   for (var i = -23; i < grades.length; i++) {
-//     from = grades[i];
-//     to = grades[i + 1];
-//
-//     labels.push(
-//       '<i style="background:' + getColor(from + 1) + '"></i> ' +
-//       from + (to ? '&ndash;' + to : '+'));
-//   }
-//
-//   div.innerHTML = labels.join('<br>');
-//   return div;
-// };
-//
-// Choroplethlegend.addTo(map);
+//  Creating Choropleth legend
+var Choroplethlegend = L.control({position: 'bottomright'});
+
+Choroplethlegend.onAdd = function (map) {
+
+  var div = L.DomUtil.create('div', 'info legend'),
+    grades = [-23, 1, 5, 10, 20, 160],
+    labels = [],
+    from, to;
+
+  for (var i = -23; i < grades.length; i++) {
+    from = grades[i];
+    to = grades[i + 1];
+
+    labels.push(
+      '<i style="background:' + getColor(from + 1) + '"></i> ' +
+      from + (to ? '&ndash;' + to : '+'));
+  }
+
+  div.innerHTML = labels.join('<br>');
+  return div;
+};
+
+Choroplethlegend.addTo(map);
 
 var OfficePoints = {
     radius: 10,
