@@ -42,21 +42,21 @@ var SubwayStationPoints  = L.geoJSON(BronxSubwayStations, {
 }).addTo(map);
 
 // Control that Shows CT Info on Hover
-var CTinfo = L.control();
+var info = L.control();
 
-CTinfo.onAdd = function (map) {
+info.onAdd = function (map) {
   this._div = L.DomUtil.create('div', 'info');
   this.update();
   return this._div;
 };
 
-CTinfo.update = function (props) {
+info.update = function (props) {
   this._div.innerHTML = '<h4>Population % Change <br> Between ACS Survey Years <br> 2006 - 2010 & 2012 - 2016</h4>' +
   (props ? '<b>' + 'Census Tract' + " " + props.CTLabel + '</b><br />' + props.Change + '% Change'
     : 'Hover Over a Census Tract');
 };
 
-CTinfo.addTo(map);
+info.addTo(map);
 
 // Adding CT Colors Based on Change Property
 function getColor(Change) {
