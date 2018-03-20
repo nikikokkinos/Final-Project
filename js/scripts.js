@@ -19,6 +19,16 @@ var SubwayLines = L.geoJSON(BronxSubwayLines, {
     weight: 2,
 }).addTo(map);
 
+// // Custom popup
+//    var customPopup = "Mozilla Toronto Offices<br/><img src='http://joshuafrazier.info/images/maptime.gif' alt='maptime logo gif' width='350px'/>";
+//
+// // specify popup options
+//    var customOptions =
+//        {
+//        'maxWidth': '500',
+//        'className' : 'custom'
+//        }
+
 var SubwayPoints = {
     radius: 10,
     color: "BLACK",
@@ -324,3 +334,11 @@ L.control.layers({}, overlays).addTo(map);
 //     $('#' + name + '-legend').hide();
 //   }
 // }
+$(document).ready(function(){
+    $("#TableButton").click(function(){
+        $("PopulationDataTable").show();
+    });
+    $("#HideTableButton").click(function(){
+        $("PopulationDataTable").hide();
+    });
+});

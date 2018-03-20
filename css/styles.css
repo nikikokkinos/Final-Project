@@ -32,8 +32,9 @@ h1 {
   padding: 5px 15px 15px 15px;
   font: 8px, Arial, sans-serif;
   color: #777;
-  top: 480px;
-  left: 10px;
+  top: 470px;
+  bottom: 15px;
+  left: 20px;
 }
 
 h2 {
@@ -43,11 +44,10 @@ h2 {
 #OverlayLegend {
     float: right;
     z-index: 1000;
-    margin: 0 5px 20px 0;
     background: #FFF;
     padding: 5px 15px 15px 15px;
     border-style: solid;
-    weight: 2px;
+    weight: 1px;
     border-radius: 5px;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
     font: 8px, Arial, sans-serif;
@@ -106,4 +106,18 @@ h2 {
   float: left;
   margin-right: 8px;
   opacity: 0.7;
+}
+
+#TableButton {
+  padding: 5px;
+  font: 12px Arial, sans-serif;
+  background: #e0e0e0;
+  radius: 2px;
+}
+
+#HideTableButton {
+  padding: 5px;
+  font: 12px Arial, sans-serif;
+  background: #e0e0e0;
+  radius: 2px;
 }
