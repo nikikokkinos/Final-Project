@@ -1,57 +1,14 @@
 var map = L.map('map', {
   center: [40.815141, -73.934169],
   zoom: 14,
-  // layers: [CensusTracts, Office, Residential, Retail, Storage, Factory, RezonedArea],
 });
 
 L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png', {
   attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-var StudyAreaBoundary = L.geoJSON(StudyArea, {
-  fillColor: "none",
-  color: "#191d5b",
-  weight: 3,
-}).addTo(map);
-
-var SubwayLines = L.geoJSON(BronxSubwayLines, {
-  color: "BLACK",
-  weight: 2,
-}).addTo(map);
-
-// // Custom popup
-//    var customPopup = "Mozilla Toronto Offices<br/><img src='http://joshuafrazier.info/images/maptime.gif' alt='maptime logo gif' width='350px'/>";
-//
-// // specify popup options
-//    var customOptions =
-//        {
-//        'maxWidth': '500',
-//        'className' : 'custom'
-//        }
-
-var SubwayPoints = {
-  radius: 10,
-  color: "BLACK",
-  fillColor: "BLACK",
-  weight: 1,
-};
-
-var SubwayStationPoints = L.geoJSON(BronxSubwayStations, {
-  pointToLayer: function(feature, latlng) {
-    var marker = L.circleMarker(latlng, SubwayPoints)
-      .bindPopup(feature.properties.name + "<br>" + feature.properties.line);
-    marker.on('mouseover', function(e) {
-      this.openPopup();
-    });
-    marker.on('mouseout', function(e) {
-      this.closePopup();
-    });
-
-    return marker;
-  }
-}).addTo(map);
-
-// Control that Shows CT Info on Hover
+// Creating all elements for First Choropleth Map - Population Change
+// Control that Shows CT Population Info on Hover
 var info = L.control();
 
 info.onAdd = function(map) {
@@ -68,7 +25,7 @@ info.update = function(props) {
 
 info.addTo(map);
 
-// Adding CT Colors Based on Change Property
+// Adding CT Color Values Based on Change Property
 function getColor(Change) {
   return Change < 1 ? '#d7191c' :
     Change < 6 ? '#fdae61' :
@@ -89,7 +46,7 @@ function style(feature) {
   };
 }
 
-// Creating Highlight on Hover
+// Creating Highlight on Hover for Population Layer
 function highlightFeature(e) {
   var layer = e.target;
 
@@ -131,37 +88,66 @@ CensusTractsOverlayLayer = L.geoJson(StudyAreaCensusTracts, {
   onEachFeature: onEachFeature
 }).addTo(map);
 
+// Creating First Choropleth Legend
+var Choroplethlegend = L.control({
+  position: 'bottomright'
+});
 
+Choroplethlegend.onAdd = function(map) {
 
+  var div = L.DomUtil.create('div', 'info legend population-legend'),
+    grades = [-23, 1, 5, 10, 20, 160],
+    labels = [],
+    from, to;
+
+  grades.forEach(function(grade, i) {
+    if (i === 5) return;
+    var from = grade;
+    var to = grades[i + 1];
+
+    labels.push(
+      '<i style="background:' + getColor(from + 1) + '"></i> ' +
+      from + (to ? '&ndash;' + to : '+'));
+  })
+
+  div.innerHTML = labels.join('<br>');
+  return div;
+};
+
+Choroplethlegend.addTo(map);
+
+// Creating Second Choropleth Map - New Residential DUs
 // Control that Shows DU Info on Hover
 var info2 = L.control();
 
-
 info2.onAdd = function(map2) {
-  this._div = L.DomUtil.create('div', 'info DU');
+  this._div = L.DomUtil.create('div', 'infodu');
   this.update();
-  console.log(this._div);
+  // console.log(this._div);
   return this._div;
 };
 
 info2.update = function(props2) {
   console.log(props2);
   this._div.innerHTML = '<h4>New Residential Dwelling Units <br> Created in Last 15 Years</h4>' +
-    (props2 ? '<b>' + 'Census Tract' + " " + props2.CTLabel + '</b><br />' + props2.Res_Units + 'Dwelling Units' :
+    (props2 ? '<b>' + 'Census Tract' + " " + props2.CTLabel + '</b><br />' + props2.Res_Units + " " +'Dwelling Units' :
       'Hover Over a Census Tract');
-  console.log(this._div.innerHTML);
+  // console.log(this._div.innerHTML);
 };
 
 info2.addTo(map);
 
-// Creating Second Choropleth Map New Residential DUs
+// hiding the Info DU by Default
+$('.infodu').hide()
+
+// Creating function that returns a color based on the values
 function getColor2(Res_Units) {
   console.log(Res_Units)
-  return Res_Units <= 30 ? '#d7191c' :
-    Res_Units <= 100 ? '#fdae61' :
-    Res_Units <= 300 ? '#ffffbf' :
-    Res_Units <= 500 ? '#a6d96a' :
-    Res_Units <= 1000 ? '#1a9641' :
+  return Res_Units < 100 ? '#d7191c' :
+    Res_Units < 300 ? '#fdae61' :
+    Res_Units < 500 ? '#ffffbf' :
+    Res_Units < 700 ? '#a6d96a' :
+    Res_Units < 1710 ? '#1a9641' :
     '#FFEDA0';
 }
 
@@ -187,9 +173,9 @@ function highlightFeature2(e) {
     fillOpacity: 0.7
   });
 
-  // if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-  // 	layer.bringToFront();
-  // }
+  if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+  	layer.bringToFront();
+  }
 
   info2.update(layer.feature.properties);
 }
@@ -218,34 +204,20 @@ DUsLayer = L.geoJson(StudyAreaCensusTracts, {
   onEachFeature: onEachFeature2
 })
 
+// Calling on infodivs to show or hide
+map.on('baselayerchange', handleLayerToggle2);
 
-// Creating Choropleth legend
-var Choroplethlegend = L.control({
-  position: 'bottomright'
-});
+function handleLayerToggle2(eventLayer) {
+  $('.info').hide()
+  var name = eventLayer.name
+  if (name === 'DU Overlay') {
+    $('.infodu').show()
+  }
+  if (name === 'Population Change') {
+    $('.info').show()
+  }
 
-Choroplethlegend.onAdd = function(map) {
-
-  var div = L.DomUtil.create('div', 'info legend population-legend'),
-    grades = [-23, 1, 5, 10, 20, 160],
-    labels = [],
-    from, to;
-
-  grades.forEach(function(grade, i) {
-    if (i === 5) return;
-    var from = grade;
-    var to = grades[i + 1];
-
-    labels.push(
-      '<i style="background:' + getColor(from + 1) + '"></i> ' +
-      from + (to ? '&ndash;' + to : '+'));
-  })
-
-  div.innerHTML = labels.join('<br>');
-  return div;
-};
-
-Choroplethlegend.addTo(map);
+}
 
 // Second Choropleth Legend
 var Choroplethlegend2 = L.control({
@@ -255,7 +227,7 @@ var Choroplethlegend2 = L.control({
 Choroplethlegend2.onAdd = function(map) {
 
   var div = L.DomUtil.create('div', 'info legend du-legend'),
-    grades = [0, 30, 100, 300, 500, 1000],
+    grades = [0, 100, 300, 500, 700, 1709],
     labels = [],
     from, to;
 
@@ -278,6 +250,7 @@ Choroplethlegend2.addTo(map);
 // hiding the DU Legend by Default
 $('.du-legend').hide()
 
+// Adding all Point Data
 var OfficePoints = {
   radius: 10,
   weight: 1,
@@ -407,25 +380,40 @@ var RezonedAreaOverlay = L.geoJSON(ZoningMapAmendments, {
   fillColor: "#2b2e5e",
   fillOpacity: .5,
   color: "#2b2e5e",
-  // Trying to add a popup on mouseover of layer
-  // .bindPopup(feature.properties.PROJECT_NA)
-  // RezonedAreaOverlay.on('mouseover', function (e) {
-  //     this.openPopup();
-  // });
-  // RezonedAreaOverlay.on('mouseout', function (e) {
-  //     this.closePopup();
-  // });
-  //
-  // return RezonedAreaOverlay;
 })
 
-// var CensusTracts = L.layerGroup([CensusTractsOverlayLayer]);
-// var Office = L.layerGroup([OfficeOverlay]);
-// var Residential = L.layerGroup([ResidentialOverlay]);
-// var Retail = L.layerGroup([RetailOverlay]);
-// var Storage = L.layerGroup([StorageOverlay]);
-// var Factory = L.layerGroup([FactoryOverlay]);
-// var RezonedArea = L.layerGroup([RezonedAreaOverlay]);
+var StudyAreaBoundary = L.geoJSON(StudyArea, {
+  fillColor: "none",
+  color: "#191d5b",
+  weight: 3,
+}).addTo(map);
+
+var SubwayLines = L.geoJSON(BronxSubwayLines, {
+  color: "BLACK",
+  weight: 2,
+}).addTo(map);
+
+var SubwayPoints = {
+  radius: 10,
+  color: "BLACK",
+  fillColor: "BLACK",
+  weight: 1,
+};
+
+var SubwayStationPoints = L.geoJSON(BronxSubwayStations, {
+  pointToLayer: function(feature, latlng) {
+    var marker = L.circleMarker(latlng, SubwayPoints)
+      .bindPopup(feature.properties.name + "<br>" + feature.properties.line);
+    marker.on('mouseover', function(e) {
+      this.openPopup();
+    });
+    marker.on('mouseout', function(e) {
+      this.closePopup();
+    });
+
+    return marker;
+  }
+}).addTo(map);
 
 var choropleths = {
   "Population Change": CensusTractsOverlayLayer,
@@ -445,10 +433,8 @@ L.control.layers(choropleths, overlays).addTo(map);
 
 // Calling on legends to show or hide
 map.on('baselayerchange', handleLayerToggle);
-// map.on('overlayremove', handleLayerToggle);
 
 function handleLayerToggle(eventLayer) {
-  console.log(eventLayer)
   $('.legend').hide()
   var name = eventLayer.name
   if (name === 'DU Overlay') {

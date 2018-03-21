@@ -95,14 +95,14 @@ h2 {
   color: #777;
 }
 
-.duinfo {
+/* .duinfo {
   padding: 6px 8px;
   font: 12px Arial, Helvetica, sans-serif;
   background: white;
   background: rgba(255,255,255,0.8);
   box-shadow: 0 0 15px rgba(0,0,0,0.2);
   border-radius: 5px;
-}
+} */
 
 .legend {
   text-align: left;
@@ -115,28 +115,4 @@ h2 {
   float: left;
   margin-right: 8px;
   opacity: 0.7;
-}
-
-#TableButton {
-  padding: 5px;
-  font: 12px Arial, sans-serif;
-  background: #e0e0e0;
-  radius: 2px;
-}
-
-#HideTableButton {
-  padding: 5px;
-  font: 12px Arial, sans-serif;
-  background: #e0e0e0;
-  radius: 2px;
-}
-
-#PopulationDataTable {
-  z-index: 10000;
-  opacity: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -50px;
-  margin-left: -100px;
 }
