@@ -8,66 +8,6 @@ L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.p
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-var StudyAreaBoundary = L.geoJSON(StudyArea, {
-    fillColor: "none",
-    color: "#191d5b",
-    weight: 3,
-}).addTo(map);
-
-var SubwayLines = L.geoJSON(BronxSubwayLines, {
-    color: "BLACK",
-    weight: 2,
-}).addTo(map);
-
-// // Custom popup
-//    var customPopup = "Mozilla Toronto Offices<br/><img src='http://joshuafrazier.info/images/maptime.gif' alt='maptime logo gif' width='350px'/>";
-//
-// // specify popup options
-//    var customOptions =
-//        {
-//        'maxWidth': '500',
-//        'className' : 'custom'
-//        }
-
-var SubwayPoints = {
-    radius: 10,
-    color: "BLACK",
-    fillColor: "BLACK",
-    weight: 1,
-};
-
-var SubwayStationPoints  = L.geoJSON(BronxSubwayStations, {
-   pointToLayer: function (feature, latlng) {
-     var marker = L.circleMarker(latlng, SubwayPoints)
-         .bindPopup(feature.properties.name + "<br>" + feature.properties.line);
-         marker.on('mouseover', function (e) {
-             this.openPopup();
-         });
-         marker.on('mouseout', function (e) {
-             this.closePopup();
-         });
-
-      return marker;
-  }
-}).addTo(map);
-
-// Control that Shows CT Info on Hover
-var info = L.control();
-
-info.onAdd = function (map) {
-  this._div = L.DomUtil.create('div', 'info');
-  this.update();
-  return this._div;
-};
-
-info.update = function (props) {
-  this._div.innerHTML = '<h4>Population % Change <br> Between ACS Survey Years <br> 2006 - 2010 & 2012 - 2016</h4>' +
-  (props ? '<b>' + 'Census Tract' + " " + props.CTLabel + '</b><br />' + props.Change + '% Change'
-    : 'Hover Over a Census Tract');
-};
-
-info.addTo(map);
-
 // Adding CT Colors Based on Change Property
 function getColor(Change) {
 		return Change < 1 ? '#d7191c' :
@@ -89,80 +29,16 @@ function style(feature) {
 		};
 	}
 
-  // Creating Highlight on Hover
-	function highlightFeature(e) {
-		var layer = e.target;
+// Creating Highlight on Hover
+function highlightFeature(e) {
+	var layer = e.target;
 
-		layer.setStyle({
-			weight: 5,
-			color: '#666',
-			dashArray: '',
-			fillOpacity: 0.7
-		});
-
-		if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-			layer.bringToFront();
-		}
-
-		info.update(layer.feature.properties);
-	}
-
-	var CensusTractsOverlayLayer;
-
-	function resetHighlight(e) {
-		CensusTractsOverlayLayer.resetStyle(e.target);
-		info.update();
-	}
-
-	function zoomToFeature(e) {
-		map.fitBounds(e.target.getBounds());
-	}
-
-	function onEachFeature(feature, layer) {
-		layer.on({
-			mouseover: highlightFeature,
-			mouseout: resetHighlight,
-			click: zoomToFeature
-		});
-	}
-
-CensusTractsOverlayLayer = L.geoJson(StudyAreaCensusTracts, {
-		style: style,
-		onEachFeature: onEachFeature
-}).addTo(map);
-
-// Creating Second Choropleth Map New Residential DUs
-function getColor2(Res_Units) {
-  console.log(Res_Units)
-		return Res_Units <= 30 ? '#d7191c' :
-				Res_Units <= 100 ? '#fdae61' :
-				Res_Units <= 300  ? '#ffffbf' :
-				Res_Units <= 500  ? '#a6d96a' :
-        Res_Units <= 1000 ? '#1a9641' :
-							'#FFEDA0';
-	}
-
-function style2(feature) {
-		return {
-			weight: 2,
-			opacity: 1,
-			color: 'white',
-			dashArray: '3',
-			fillOpacity: 0.7,
-			fillColor: getColor2(feature.properties.Res_Units)
-		};
-	}
-
-  // Creating Highlight on Hover
-	function highlightFeature2(e) {
-		var layer = e.target;
-
-		layer.setStyle({
-			weight: 5,
-			color: '#666',
-			dashArray: '',
-			fillOpacity: 0.7
-		});
+	layer.setStyle({
+		weight: 5,
+		color: '#666',
+		dashArray: '',
+		fillOpacity: 0.7
+	});
 
 		// if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
 		// 	layer.bringToFront();
@@ -171,46 +47,46 @@ function style2(feature) {
 		info.update(layer.feature.properties);
 	}
 
-	var DUsLayer;
+var CensusTractsOverlayLayer;
 
-	function resetHighlight2(e) {
-		DUsLayer.resetStyle(e.target);
-		info.update();
+function resetHighlight(e) {
+	CensusTractsOverlayLayer.resetStyle(e.target);
+	info.update();
 	}
 
-	function zoomToFeature2(e) {
-		map.fitBounds(e.target.getBounds());
+function zoomToFeature(e) {
+	map.fitBounds(e.target.getBounds());
 	}
 
-	function onEachFeature2(feature, layer) {
-		layer.on({
-			mouseover: highlightFeature2,
-			mouseout: resetHighlight2,
-			click: zoomToFeature2
-		});
-	}
+function onEachFeature(feature, layer) {
+	layer.on({
+		mouseover: highlightFeature,
+		mouseout: resetHighlight,
+		click: zoomToFeature
+	});
+}
 
-DUsLayer = L.geoJson(StudyAreaCensusTracts, {
-		style: style2,
+CensusTractsOverlayLayer = L.geoJson(StudyAreaCensusTracts, {
+		style: style,
 		onEachFeature: onEachFeature
-})
+}).addTo(map);
 
-// Control that Shows DU Info on Hover
-var info2 = L.control();
+// Control that Shows CT Population Info on Hover
+var info = L.control();
 
-info2.onAdd = function (map2) {
-  this._div = L.DomUtil.create('div', 'info DU');
+info.onAdd = function (map) {
+  this._div = L.DomUtil.create('div', 'info');
   this.update();
   return this._div;
 };
 
-info2.update = function (props2) {
-  this._div.innerHTML = '<h4>New Residential Dwelling Units <br> Created in Last 15 Years</h4>' +
-  (props2 ? '<b>' + 'Census Tract' + " " + props.CTLabel + '</b><br />' + props.Res_Units + 'Dwelling Units'
+info.update = function (props) {
+  this._div.innerHTML = '<h4>Population % Change <br> Between ACS Survey Years <br> 2006 - 2010 & 2012 - 2016</h4>' +
+  (props ? '<b>' + 'Census Tract' + " " + props.CTLabel + '</b><br />' + props.Change + '% Change'
     : 'Hover Over a Census Tract');
 };
 
-info2.addTo(map);
+info.addTo(map);
 
 // Creating Choropleth legend
 var Choroplethlegend = L.control({position: 'bottomright'});
@@ -237,6 +113,89 @@ Choroplethlegend.onAdd = function (map) {
 };
 
 Choroplethlegend.addTo(map);
+
+// Creating Second Choropleth Map New Residential DUs
+function getColor2(Res_Units) {
+  console.log(Res_Units)
+		return Res_Units <= 30 ? '#d7191c' :
+				Res_Units <= 100 ? '#fdae61' :
+				Res_Units <= 300  ? '#ffffbf' :
+				Res_Units <= 500  ? '#a6d96a' :
+        Res_Units <= 1000 ? '#1a9641' :
+							'#FFEDA0';
+	}
+
+function style2(feature) {
+		return {
+			weight: 2,
+			opacity: 1,
+			color: 'white',
+			dashArray: '3',
+			fillOpacity: 0.7,
+			fillColor: getColor2(feature.properties.Res_Units)
+		};
+	}
+
+// Creating Highlight on Hover
+function highlightFeature2(e) {
+	var layer = e.target;
+
+	layer.setStyle({
+		weight: 5,
+		color: '#666',
+		dashArray: '',
+		fillOpacity: 0.7
+	});
+
+		// if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+		// 	layer.bringToFront();
+		// }
+
+		info.update(layer.feature.properties);
+	}
+
+var DUsLayer;
+
+function resetHighlight2(e) {
+	DUsLayer.resetStyle(e.target);
+	info.update();
+}
+
+function zoomToFeature2(e) {
+	map.fitBounds(e.target.getBounds());
+}
+
+function onEachFeature2(feature, layer) {
+	layer.on({
+		mouseover: highlightFeature2,
+		mouseout: resetHighlight2,
+		click: zoomToFeature2
+		});
+	}
+
+DUsLayer = L.geoJson(StudyAreaCensusTracts, {
+		style: style2,
+		onEachFeature: onEachFeature
+})
+
+// Control that Shows DU Info on Hover
+var info2 = L.control();
+
+info2.onAdd = function (map2) {
+  this._div = L.DomUtil.create('div', 'info DU');
+  this.update();
+  return this._div;
+};
+
+info2.update = function (props) {
+  this._div.innerHTML = '<h4>New Residential Dwelling Units <br> Created in Last 15 Years</h4>' +
+  (props ? '<b>' + 'Census Tract' + " " + props.CTLabel + '</b><br />' + props.Res_Units + 'Dwelling Units'
+    : 'Hover Over a Census Tract');
+    console.log(this)
+    return this;
+};
+
+info2.addTo(map);
 
 // Second Choropleth Legend
 var Choroplethlegend2 = L.control({position: 'bottomright'});
@@ -386,25 +345,7 @@ var RezonedAreaOverlay = L.geoJSON(ZoningMapAmendments, {
   fillColor: "#2b2e5e",
   fillOpacity: .5,
   color: "#2b2e5e",
-  // Trying to add a popup on mouseover of layer
-    // .bindPopup(feature.properties.PROJECT_NA)
-    // RezonedAreaOverlay.on('mouseover', function (e) {
-    //     this.openPopup();
-    // });
-    // RezonedAreaOverlay.on('mouseout', function (e) {
-    //     this.closePopup();
-    // });
-    //
-    // return RezonedAreaOverlay;
 })
-
-// var CensusTracts = L.layerGroup([CensusTractsOverlayLayer]);
-// var Office = L.layerGroup([OfficeOverlay]);
-// var Residential = L.layerGroup([ResidentialOverlay]);
-// var Retail = L.layerGroup([RetailOverlay]);
-// var Storage = L.layerGroup([StorageOverlay]);
-// var Factory = L.layerGroup([FactoryOverlay]);
-// var RezonedArea = L.layerGroup([RezonedAreaOverlay]);
 
 var choropleths = {
   "Population Change": CensusTractsOverlayLayer,
@@ -438,3 +379,36 @@ function handleLayerToggle(eventLayer) {
   }
 
 }
+
+var StudyAreaBoundary = L.geoJSON(StudyArea, {
+    fillColor: "none",
+    color: "#191d5b",
+    weight: 3,
+}).addTo(map);
+
+var SubwayLines = L.geoJSON(BronxSubwayLines, {
+    color: "BLACK",
+    weight: 2,
+}).addTo(map);
+
+var SubwayPoints = {
+    radius: 10,
+    color: "BLACK",
+    fillColor: "BLACK",
+    weight: 1,
+};
+
+var SubwayStationPoints  = L.geoJSON(BronxSubwayStations, {
+   pointToLayer: function (feature, latlng) {
+     var marker = L.circleMarker(latlng, SubwayPoints)
+         .bindPopup(feature.properties.name + "<br>" + feature.properties.line);
+         marker.on('mouseover', function (e) {
+             this.openPopup();
+         });
+         marker.on('mouseout', function (e) {
+             this.closePopup();
+         });
+
+      return marker;
+  }
+}).addTo(map);
