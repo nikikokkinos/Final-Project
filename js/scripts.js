@@ -132,28 +132,29 @@ CensusTractsOverlayLayer = L.geoJson(StudyAreaCensusTracts, {
 }).addTo(map);
 
 // Creating Second Choropleth Map New Residential DUs
-function getColor(Res_Units) {
+function getColor2(Res_Units) {
+  console.log(Res_Units)
 		return Res_Units = 0 ? '#d7191c' :
 				Res_Units < 100 ? '#fdae61' :
 				Res_Units < 300  ? '#ffffbf' :
 				Res_Units < 500  ? '#a6d96a' :
-        Change < 1000 ? '#1a9641' :
+        Res_Units < 1000 ? '#1a9641' :
 							'#FFEDA0';
 	}
 
-function style(feature) {
+function style2(feature) {
 		return {
 			weight: 2,
 			opacity: 1,
 			color: 'white',
 			dashArray: '3',
 			fillOpacity: 0.7,
-			fillColor: getColor(feature.properties.Res_Units)
+			fillColor: getColor2(feature.properties.Res_Units)
 		};
 	}
 
   // Creating Highlight on Hover
-	function highlightFeature(e) {
+	function highlightFeature2(e) {
 		var layer = e.target;
 
 		layer.setStyle({
@@ -172,52 +173,79 @@ function style(feature) {
 
 	var DUsLayer;
 
-	function resetHighlight(e) {
+	function resetHighlight2(e) {
 		DUsLayer.resetStyle(e.target);
 		info.update();
 	}
 
-	function zoomToFeature(e) {
+	function zoomToFeature2(e) {
 		map.fitBounds(e.target.getBounds());
 	}
 
-	function onEachFeature(feature, layer) {
+	function onEachFeature2(feature, layer) {
 		layer.on({
-			mouseover: highlightFeature,
-			mouseout: resetHighlight,
-			click: zoomToFeature
+			mouseover: highlightFeature2,
+			mouseout: resetHighlight2,
+			click: zoomToFeature2
 		});
 	}
 
 DUsLayer = L.geoJson(StudyAreaCensusTracts, {
-		style: style,
+		style: style2,
 		onEachFeature: onEachFeature
 })
 
-//  Creating Choropleth legend
-// var Choroplethlegend = L.control({position: 'bottomright'});
-//
-// Choroplethlegend.onAdd = function (map) {
-//
-//   var div = L.DomUtil.create('div', 'info legend'),
-//     grades = [-23, 1, 5, 10, 20, 160],
-//     labels = [],
-//     from, to;
-//
-//   for (var i = -23; i < grades.length; i++) {
-//     from = grades[i];
-//     to = grades[i + 1];
-//
-//     labels.push(
-//       '<i style="background:' + getColor(from + 1) + '"></i> ' +
-//       from + (to ? '&ndash;' + to : '+'));
-//   }
-//
-//   div.innerHTML = labels.join('<br>');
-//   return div;
-// };
-//
-// Choroplethlegend.addTo(map);
+// Creating Choropleth legend
+var Choroplethlegend = L.control({position: 'bottomright'});
+
+Choroplethlegend.onAdd = function (map) {
+
+  var div = L.DomUtil.create('div', 'info legend'),
+    grades = [-23, 1, 5, 10, 20, 160],
+    labels = [],
+    from, to;
+
+  grades.forEach(function (grade, i) {
+    if (i===5) return;
+    var from = grade;
+    var to = grades[i + 1];
+
+    labels.push(
+      '<i style="background:' + getColor(from + 1) + '"></i> ' +
+      from + (to ? '&ndash;' + to : '+'));
+  })
+
+  div.innerHTML = labels.join('<br>');
+  return div;
+};
+
+Choroplethlegend.addTo(map);
+
+// Second Choropleth Legend
+var Choroplethlegend2 = L.control({position: 'bottomright'});
+
+Choroplethlegend2.onAdd = function (map) {
+
+  var div = L.DomUtil.create('div', 'info legend'),
+    grades = [-23, 1, 5, 10, 20, 160],
+    labels = [],
+    from, to;
+
+  grades.forEach(function (grade, i) {
+    if (i===5) return;
+    var from = grade;
+    var to = grades[i + 1];
+
+    labels.push(
+      '<i style="background:' + getColor(from + 1) + '"></i> ' +
+      from + (to ? '&ndash;' + to : '+'));
+  })
+
+  div.innerHTML = labels.join('<br>');
+  return div;
+};
+
+Choroplethlegend2.addTo(map);
 
 var OfficePoints = {
     radius: 10,
@@ -358,8 +386,12 @@ var RezonedAreaOverlay = L.geoJSON(ZoningMapAmendments, {
 // var Factory = L.layerGroup([FactoryOverlay]);
 // var RezonedArea = L.layerGroup([RezonedAreaOverlay]);
 
-var overlays = {
+var choropleths = {
   "Population Change": CensusTractsOverlayLayer,
+  "DU Overlay": DUsLayer,
+}
+
+var overlays = {
   "New Office": OfficeOverlay,
   "New Residential": ResidentialOverlay,
   "New Retail": RetailOverlay,
@@ -368,35 +400,25 @@ var overlays = {
   "Zoning Map Amendments": RezonedAreaOverlay,
 };
 
-L.control.layers({}, overlays).addTo(map);
+L.control.layers(choropleths, overlays).addTo(map);
 
-// L.control.layers({}, {
-//   Census_Tracts: CensusTracts,
-//   New_Office: Office,
-//   New_Residential: Residential,
-//   New_Retail: Retail,
-//   New_Storage: Storage,
-//   New_Factory: Factory,
-//   New_Rezoned_Area: RezonedArea
-// }).addTo(map);
+add event listeners for overlayadd and overlayremove
+map.on('baselayerchange', handleLayerToggle);
+map.on('overlayremove', handleLayerToggle);
 
-// add event listeners for overlayadd and overlayremove
-// map.on('overlayadd', handleLayerToggle);
-// map.on('overlayremove', handleLayerToggle);
-//
-// function handleLayerToggle(eventLayer) {
-// 	// get the name of the layergroup, and whether it is being added or removed
-//   var type = eventLayer.type;
-//   var name = eventLayer.name;
-//
-// 	// if being added, show the corresponding legend
-//   // else, hide it.
-//   if (eventLayer.type === 'overlayadd') {
-//     $('#' + name + '-legend').show();
-//   } else {
-//     $('#' + name + '-legend').hide();
-//   }
-// }
+function handleLayerToggle(eventLayer) {
+	// get the name of the layergroup, and whether it is being added or removed
+  var type = eventLayer.type;
+  var name = eventLayer.name;
+
+	// if being added, show the corresponding legend
+  // else, hide it.
+  if (eventLayer.type === 'overlayadd') {
+    $('#' + name + '-legend').show();
+  } else {
+    $('#' + name + '-legend').hide();
+  }
+}
     $("#TableButton").click(function(){
         $("PopulationDataTable").css("opacity", "1");
     });
