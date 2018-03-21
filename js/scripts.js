@@ -334,11 +334,9 @@ L.control.layers({}, overlays).addTo(map);
 //     $('#' + name + '-legend').hide();
 //   }
 // }
-$(document).ready(function(){
     $("#TableButton").click(function(){
-        $("PopulationDataTable").show();
+        $("PopulationDataTable").css("opacity", "1");
     });
     $("#HideTableButton").click(function(){
-        $("PopulationDataTable").hide();
+        $("PopulationDataTable").css("opacity", "1");
     });
-});
