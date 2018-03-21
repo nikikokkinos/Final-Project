@@ -134,11 +134,11 @@ CensusTractsOverlayLayer = L.geoJson(StudyAreaCensusTracts, {
 // Creating Second Choropleth Map New Residential DUs
 function getColor2(Res_Units) {
   console.log(Res_Units)
-		return Res_Units = 0 ? '#d7191c' :
-				Res_Units < 100 ? '#fdae61' :
-				Res_Units < 300  ? '#ffffbf' :
-				Res_Units < 500  ? '#a6d96a' :
-        Res_Units < 1000 ? '#1a9641' :
+		return Res_Units <= 30 ? '#d7191c' :
+				Res_Units <= 100 ? '#fdae61' :
+				Res_Units <= 300  ? '#ffffbf' :
+				Res_Units <= 500  ? '#a6d96a' :
+        Res_Units <= 1000 ? '#1a9641' :
 							'#FFEDA0';
 	}
 
@@ -164,9 +164,9 @@ function style2(feature) {
 			fillOpacity: 0.7
 		});
 
-		if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-			layer.bringToFront();
-		}
+		// if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+		// 	layer.bringToFront();
+		// }
 
 		info.update(layer.feature.properties);
 	}
@@ -195,12 +195,29 @@ DUsLayer = L.geoJson(StudyAreaCensusTracts, {
 		onEachFeature: onEachFeature
 })
 
+// Control that Shows DU Info on Hover
+var info2 = L.control();
+
+info2.onAdd = function (map2) {
+  this._div = L.DomUtil.create('div', 'info DU');
+  this.update();
+  return this._div;
+};
+
+info2.update = function (props2) {
+  this._div.innerHTML = '<h4>New Residential Dwelling Units <br> Created in Last 15 Years</h4>' +
+  (props2 ? '<b>' + 'Census Tract' + " " + props.CTLabel + '</b><br />' + props.Res_Units + 'Dwelling Units'
+    : 'Hover Over a Census Tract');
+};
+
+info2.addTo(map);
+
 // Creating Choropleth legend
 var Choroplethlegend = L.control({position: 'bottomright'});
 
 Choroplethlegend.onAdd = function (map) {
 
-  var div = L.DomUtil.create('div', 'info legend'),
+  var div = L.DomUtil.create('div', 'info legend population-legend'),
     grades = [-23, 1, 5, 10, 20, 160],
     labels = [],
     from, to;
@@ -226,8 +243,8 @@ var Choroplethlegend2 = L.control({position: 'bottomright'});
 
 Choroplethlegend2.onAdd = function (map) {
 
-  var div = L.DomUtil.create('div', 'info legend'),
-    grades = [-23, 1, 5, 10, 20, 160],
+  var div = L.DomUtil.create('div', 'info legend du-legend'),
+    grades = [0, 30, 100, 300, 500, 1000],
     labels = [],
     from, to;
 
@@ -246,6 +263,9 @@ Choroplethlegend2.onAdd = function (map) {
 };
 
 Choroplethlegend2.addTo(map);
+
+// hiding the DU Legend by Default
+$('.du-legend').hide()
 
 var OfficePoints = {
     radius: 10,
@@ -402,26 +422,19 @@ var overlays = {
 
 L.control.layers(choropleths, overlays).addTo(map);
 
-add event listeners for overlayadd and overlayremove
+// Calling on legends to show or hide
 map.on('baselayerchange', handleLayerToggle);
-map.on('overlayremove', handleLayerToggle);
+// map.on('overlayremove', handleLayerToggle);
 
 function handleLayerToggle(eventLayer) {
-	// get the name of the layergroup, and whether it is being added or removed
-  var type = eventLayer.type;
-  var name = eventLayer.name;
-
-	// if being added, show the corresponding legend
-  // else, hide it.
-  if (eventLayer.type === 'overlayadd') {
-    $('#' + name + '-legend').show();
-  } else {
-    $('#' + name + '-legend').hide();
+  console.log(eventLayer)
+  $('.legend').hide()
+  var name  = eventLayer.name
+  if (name === 'DU Overlay') {
+    $('.du-legend').show()
   }
+  if (name === 'Population Change') {
+    $('.population-legend').show()
+  }
+
 }
-    $("#TableButton").click(function(){
-        $("PopulationDataTable").css("opacity", "1");
-    });
-    $("#HideTableButton").click(function(){
-        $("PopulationDataTable").css("opacity", "1");
-    });
