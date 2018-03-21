@@ -78,7 +78,7 @@ function getColor(Change) {
 							'#FFEDA0';
 	}
 
-	function style(feature) {
+function style(feature) {
 		return {
 			weight: 2,
 			opacity: 1,
@@ -130,6 +130,69 @@ CensusTractsOverlayLayer = L.geoJson(StudyAreaCensusTracts, {
 		style: style,
 		onEachFeature: onEachFeature
 }).addTo(map);
+
+// Creating Second Choropleth Map New Residential DUs
+function getColor(Res_Units) {
+		return Res_Units = 0 ? '#d7191c' :
+				Res_Units < 100 ? '#fdae61' :
+				Res_Units < 300  ? '#ffffbf' :
+				Res_Units < 500  ? '#a6d96a' :
+        Change < 1000 ? '#1a9641' :
+							'#FFEDA0';
+	}
+
+function style(feature) {
+		return {
+			weight: 2,
+			opacity: 1,
+			color: 'white',
+			dashArray: '3',
+			fillOpacity: 0.7,
+			fillColor: getColor(feature.properties.Res_Units)
+		};
+	}
+
+  // Creating Highlight on Hover
+	function highlightFeature(e) {
+		var layer = e.target;
+
+		layer.setStyle({
+			weight: 5,
+			color: '#666',
+			dashArray: '',
+			fillOpacity: 0.7
+		});
+
+		if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+			layer.bringToFront();
+		}
+
+		info.update(layer.feature.properties);
+	}
+
+	var DUsLayer;
+
+	function resetHighlight(e) {
+		DUsLayer.resetStyle(e.target);
+		info.update();
+	}
+
+	function zoomToFeature(e) {
+		map.fitBounds(e.target.getBounds());
+	}
+
+	function onEachFeature(feature, layer) {
+		layer.on({
+			mouseover: highlightFeature,
+			mouseout: resetHighlight,
+			click: zoomToFeature
+		});
+	}
+
+DUsLayer = L.geoJson(StudyAreaCensusTracts, {
+		style: style,
+		onEachFeature: onEachFeature
+})
 
 //  Creating Choropleth legend
 // var Choroplethlegend = L.control({position: 'bottomright'});
