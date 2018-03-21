@@ -8,7 +8,7 @@ L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.p
     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// Adding CT Colors Based on Change Property
+// Adding CT Color Values Based on Change Property
 function getColor(Change) {
 		return Change < 1 ? '#d7191c' :
 				Change < 6  ? '#fdae61' :
@@ -117,11 +117,11 @@ Choroplethlegend.addTo(map);
 // Creating Second Choropleth Map New Residential DUs
 function getColor2(Res_Units) {
   console.log(Res_Units)
-		return Res_Units <= 30 ? '#d7191c' :
-				Res_Units <= 100 ? '#fdae61' :
-				Res_Units <= 300  ? '#ffffbf' :
-				Res_Units <= 500  ? '#a6d96a' :
-        Res_Units <= 1000 ? '#1a9641' :
+		return Res_Units < 100 ? '#d7191c' :
+				Res_Units < 300 ? '#fdae61' :
+				Res_Units < 500  ? '#ffffbf' :
+				Res_Units < 700  ? '#a6d96a' :
+        Res_Units < 1710 ? '#1a9641' :
 							'#FFEDA0';
 	}
 
@@ -203,7 +203,7 @@ var Choroplethlegend2 = L.control({position: 'bottomright'});
 Choroplethlegend2.onAdd = function (map) {
 
   var div = L.DomUtil.create('div', 'info legend du-legend'),
-    grades = [0, 30, 100, 300, 500, 1000],
+    grades = [0, 100, 300, 500, 700, 1709],
     labels = [],
     from, to;
 
