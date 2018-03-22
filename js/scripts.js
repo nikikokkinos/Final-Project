@@ -210,7 +210,7 @@ map.on('baselayerchange', handleLayerToggle2);
 function handleLayerToggle2(eventLayer) {
   $('.info').hide()
   var name = eventLayer.name
-  if (name === 'DU Overlay') {
+  if (name === 'New Dwelling Units by Census Tract') {
     $('.infodu').show()
   }
   if (name === 'Population Change') {
@@ -419,7 +419,7 @@ var SubwayStationPoints = L.geoJSON(BronxSubwayStations, {
 
 var choropleths = {
   "Population Change": CensusTractsOverlayLayer,
-  "DU Overlay": DUsLayer,
+  "New Dwelling Units by Census Tract": DUsLayer,
 }
 
 var overlays = {
@@ -439,7 +439,7 @@ map.on('baselayerchange', handleLayerToggle);
 function handleLayerToggle(eventLayer) {
   $('.legend').hide()
   var name = eventLayer.name
-  if (name === 'DU Overlay') {
+  if (name === 'New Dwelling Units by Census Tract') {
     $('.du-legend').show()
   }
   if (name === 'Population Change') {
