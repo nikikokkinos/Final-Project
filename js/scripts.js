@@ -204,7 +204,7 @@ DUsLayer = L.geoJson(StudyAreaCensusTracts, {
   onEachFeature: onEachFeature2
 })
 
-// Calling on infodivs to show or hide
+// Calling on infodivs to show or hide based on baselayer change
 map.on('baselayerchange', handleLayerToggle2);
 
 function handleLayerToggle2(eventLayer) {
@@ -239,7 +239,7 @@ Choroplethlegend2.onAdd = function(map) {
     var to = grades[i + 1];
 
     labels.push(
-      '<i style="background:' + getColor(from + 1) + '"></i> ' +
+      '<i style="background:' + getColor2(from + 1) + '"></i> ' +
       from + (to ? '&ndash;' + to : '+'));
   })
 
