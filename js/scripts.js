@@ -219,6 +219,9 @@ function handleLayerToggle2(eventLayer) {
   if (name === 'Population Change') {
     $('.infodu').hide()
   }
+  if (name === 'Study Area') {
+    $('.infodu').hide()
+  }
 }
 
 // Second Choropleth Legend
@@ -418,7 +421,7 @@ var SubwayStationPoints = L.geoJSON(BronxSubwayStations, {
   }
 }).addTo(map);
 
-var choropleths = {
+var baselayers = {
   "Population Change": CensusTractsOverlayLayer,
   "New Dwelling Units by Census Tract": DUsLayer,
   "Study Area": StudyAreaBoundary
@@ -433,7 +436,7 @@ var overlays = {
   "Zoning Map Amendments": RezonedAreaOverlay,
 };
 
-L.control.layers(choropleths, overlays).addTo(map);
+L.control.layers(baselayers, overlays).addTo(map);
 
 // Calling on legends to show or hide
 map.on('baselayerchange', handleLayerToggle);
