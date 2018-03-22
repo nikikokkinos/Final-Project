@@ -69,6 +69,7 @@ var CensusTractsOverlayLayer;
 function resetHighlight(e) {
   CensusTractsOverlayLayer.resetStyle(e.target);
   info.update();
+  CensusTractsOverlayLayer.bringToBack();
 }
 
 function zoomToFeature(e) {
@@ -123,7 +124,6 @@ var info2 = L.control();
 info2.onAdd = function(map2) {
   this._div = L.DomUtil.create('div', 'infodu');
   this.update();
-  // console.log(this._div);
   return this._div;
 };
 
@@ -132,7 +132,6 @@ info2.update = function(props2) {
   this._div.innerHTML = '<h4>New Residential Dwelling Units <br> Created in Last 15 Years</h4>' +
     (props2 ? '<b>' + 'Census Tract' + " " + props2.CTLabel + '</b><br />' + props2.Res_Units + " " +'Dwelling Units' :
       'Hover Over a Census Tract');
-  // console.log(this._div.innerHTML);
 };
 
 info2.addTo(map);
@@ -164,9 +163,9 @@ function style2(feature) {
 
 // Creating Highlight on Hover
 function highlightFeature2(e) {
-  var layer = e.target;
+  var layer2 = e.target;
 
-  layer.setStyle({
+  layer2.setStyle({
     weight: 5,
     color: '#666',
     dashArray: '',
@@ -174,7 +173,7 @@ function highlightFeature2(e) {
   });
 
   if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-  	layer.bringToFront();
+  	layer2.bringToFront();
   }
 
   info2.update(layer.feature.properties);
@@ -185,6 +184,7 @@ var DUsLayer;
 function resetHighlight2(e) {
   DUsLayer.resetStyle(e.target);
   info2.update();
+  DUsLayer.bringToBack();
 }
 
 function zoomToFeature2(e) {
@@ -216,7 +216,9 @@ function handleLayerToggle2(eventLayer) {
   if (name === 'Population Change') {
     $('.info').show()
   }
-
+  if (name === 'Population Change') {
+    $('.infodu').hide()
+  }
 }
 
 // Second Choropleth Legend
