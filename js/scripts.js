@@ -384,11 +384,12 @@ var RezonedAreaOverlay = L.geoJSON(ZoningMapAmendments, {
   color: "#2b2e5e",
 })
 
+// Layers that don't go away added
 var StudyAreaBoundary = L.geoJSON(StudyArea, {
   fillColor: "none",
   color: "#191d5b",
   weight: 3,
-}).addTo(map);
+})
 
 var SubwayLines = L.geoJSON(BronxSubwayLines, {
   color: "BLACK",
@@ -420,6 +421,7 @@ var SubwayStationPoints = L.geoJSON(BronxSubwayStations, {
 var choropleths = {
   "Population Change": CensusTractsOverlayLayer,
   "New Dwelling Units by Census Tract": DUsLayer,
+  "Study Area": StudyAreaBoundary
 }
 
 var overlays = {
