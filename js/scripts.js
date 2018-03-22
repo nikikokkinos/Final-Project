@@ -1,6 +1,6 @@
 var map = L.map('map', {
-  center: [40.815141, -73.934169],
-  zoom: 14,
+  center: [40.821149,-73.950520],
+  zoom: 13,
 });
 
 L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png', {
