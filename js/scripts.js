@@ -122,15 +122,14 @@ Choroplethlegend.addTo(map);
 var info2 = L.control();
 
 info2.onAdd = function(map2) {
-  this._div = L.DomUtil.create('div', 'infodu');
+  this._div = L.DomUtil.create('div', 'info DU');
   this.update();
   return this._div;
 };
 
 info2.update = function(props) {
-  console.log(props);
   this._div.innerHTML = '<h4>New Residential Dwelling Units <br> Created in Last 15 Years</h4>' +
-    (props ? '<b>' + 'Census Tract' + " " + props.CTLabel + '</b><br />' + props.Res_Units + " " +'Dwelling Units' :
+    (props ? '<b>Census Tract ' + props.CTLabel + '</b><br>' + props.Res_Units + ' Dwelling Units' :
       'Hover Over a Census Tract');
 };
 
