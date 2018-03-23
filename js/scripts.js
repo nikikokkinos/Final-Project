@@ -128,9 +128,9 @@ info2.onAdd = function(map2) {
 };
 
 info2.update = function(props) {
-  console.log(props2);
+  console.log(props);
   this._div.innerHTML = '<h4>New Residential Dwelling Units <br> Created in Last 15 Years</h4>' +
-    (props2 ? '<b>' + 'Census Tract' + " " + props2.CTLabel + '</b><br />' + props2.Res_Units + " " +'Dwelling Units' :
+    (props ? '<b>' + 'Census Tract' + " " + props.CTLabel + '</b><br />' + props.Res_Units + " " +'Dwelling Units' :
       'Hover Over a Census Tract');
 };
 
