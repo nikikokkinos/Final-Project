@@ -127,7 +127,7 @@ info2.onAdd = function(map2) {
   return this._div;
 };
 
-info2.update = function(props2) {
+info2.update = function(props) {
   console.log(props2);
   this._div.innerHTML = '<h4>New Residential Dwelling Units <br> Created in Last 15 Years</h4>' +
     (props2 ? '<b>' + 'Census Tract' + " " + props2.CTLabel + '</b><br />' + props2.Res_Units + " " +'Dwelling Units' :
