@@ -261,7 +261,6 @@ var OfficePoints = {
   weight: 1,
   fillColor: "ORANGE",
   fillOpacity: 1,
-  weight: .05,
 };
 
 var OfficeOverlay = L.geoJSON(NewOfficeFloorArea, {
