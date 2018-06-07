@@ -84,6 +84,22 @@ function onEachFeature(feature, layer) {
   });
 }
 
+var info2 = L.control();
+
+info2.onAdd = function(map2) {
+  this._div = L.DomUtil.create('div', 'info DU');
+  this.update();
+  return this._div;
+};
+
+info2.update = function(properties) {
+  this._div.innerHTML = '<h4>New Residential Dwelling Units <br> Created in Last 15 Years</h4>' +
+    (properties ? '<b>Census Tract ' + properties.CTLabel + '</b><br>' + properties.Res_Units + ' Dwelling Units' :
+      'Hover Over a Census Tract');
+};
+
+info2.addTo(map);
+
 CensusTractsOverlayLayer = L.geoJson(StudyAreaCensusTracts, {
   style: style,
   onEachFeature: onEachFeature
@@ -119,21 +135,37 @@ Choroplethlegend.addTo(map);
 
 // Creating Second Choropleth Map - New Residential DUs
 // Control that Shows DU Info on Hover
-var info2 = L.control();
+// var info2 = L.control();
+//
+// info2.onAdd = function(map2) {
+//   this._div = L.DomUtil.create('div', 'info DU');
+//   this.update();
+//   return this._div;
+// };
+//
+// info2.update = function(properties) {
+//   this._div.innerHTML = '<h4>New Residential Dwelling Units <br> Created in Last 15 Years</h4>' +
+//     (properties ? '<b>Census Tract ' + properties.CTLabel + '</b><br>' + properties.Res_Units + ' Dwelling Units' :
+//       'Hover Over a Census Tract');
+// };
+//
+// info2.addTo(map);
 
-info2.onAdd = function(map2) {
-  this._div = L.DomUtil.create('div', 'info DU');
-  this.update();
-  return this._div;
-};
-
-info2.update = function(props) {
-  this._div.innerHTML = '<h4>New Residential Dwelling Units <br> Created in Last 15 Years</h4>' +
-    (props ? '<b>Census Tract ' + props.CTLabel + '</b><br>' + props.Res_Units + ' Dwelling Units' :
-      'Hover Over a Census Tract');
-};
-
-info2.addTo(map);
+// var info = L.control();
+//
+// info.onAdd = function(map) {
+//   this._div = L.DomUtil.create('div', 'info');
+//   this.update();
+//   return this._div;
+// };
+//
+// info.update = function(props) {
+//   this._div.innerHTML = '<h4>Population % Change <br> Between ACS Survey Years <br> 2006 - 2010 & 2012 - 2016</h4>' +
+//     (props ? '<b>' + 'Census Tract' + " " + props.CTLabel + '</b><br />' + props.Change + '% Change' :
+//       'Hover Over a Census Tract');
+// };
+//
+// info.addTo(map);
 
 // hiding the Info DU by Default
 $('.infodu').hide()
