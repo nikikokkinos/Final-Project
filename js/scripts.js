@@ -82,7 +82,7 @@ infoCT.onAdd = function(map) {
 
 infoCT.update = function(props) {
   this._div.innerHTML = '<h4>Population % Change <br> Between ACS Survey Years <br> 2006 - 2010 & 2012 - 2016</h4>' +
-    (props ? '<b>' + 'Census Tract' + " " + props.CTLabel + '</b><br />' + props.Change + 'Population % Change' : 'Hover Over a Census Tract');
+    (props ? '<b>' + 'Census Tract' + " " + props.CTLabel + '</b><br />' + props.Change + '%' + ' ' + 'Population Change' : 'Hover Over a Census Tract');
   };
 
 infoCT.addTo(map);
