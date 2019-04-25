@@ -7,32 +7,19 @@ L.tileLayer('https://a.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.p
   attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// Creating all elements for First Choropleth Map - Population Change
-// Control that Shows CT Population Info on Hover
-var info = L.control();
+// passing CT population change layer
+var CensusTractsOverlayLayer = L.geoJson(StudyAreaCensusTracts, {
+  style: style,
+  onEachFeature: onEachFeature
+}).addTo(map);
 
-info.onAdd = function(map) {
-  this._div = L.DomUtil.create('div', 'info');
-  this.update();
-  return this._div;
-};
-
-info.update = function(props) {
-  this._div.innerHTML = '<h4>Population % Change <br> Between ACS Survey Years <br> 2006 - 2010 & 2012 - 2016</h4>' +
-    (props ? '<b>' + 'Census Tract' + " " + props.CTLabel + '</b><br />' + props.Change + '% Change' :
-      'Hover Over a Census Tract');
-};
-
-info.addTo(map);
-
-// Adding CT Color Values Based on Change Property
-function getColor(Change) {
-  return Change < 1 ? '#d7191c' :
-    Change < 6 ? '#fdae61' :
-    Change < 11 ? '#ffffbf' :
-    Change < 21 ? '#a6d96a' :
-    Change < 158 ? '#1a9641' :
-    '#FFEDA0';
+function getCTColor(Change) {
+  return Change < 1   ? '#d7191c' :
+         Change < 6   ? '#fdae61' :
+         Change < 11  ? '#ffffbf' :
+         Change < 21  ? '#a6d96a' :
+         Change < 158 ? '#1a9641' :
+                        '#FFEDA0';
 }
 
 function style(feature) {
@@ -42,11 +29,11 @@ function style(feature) {
     color: 'white',
     dashArray: '3',
     fillOpacity: 0.7,
-    fillColor: getColor(feature.properties.Change)
+    fillColor: getCTColor(feature.properties.Change)
   };
 }
 
-// Creating Highlight on Hover for Population Layer
+// Creating onEachFeature functions
 function highlightFeature(e) {
   var layer = e.target;
 
@@ -61,14 +48,12 @@ function highlightFeature(e) {
     layer.bringToFront();
   }
 
-  info.update(layer.feature.properties);
+  infoCT.update(layer.feature.properties);
 }
-
-var CensusTractsOverlayLayer;
 
 function resetHighlight(e) {
   CensusTractsOverlayLayer.resetStyle(e.target);
-  info.update();
+  infoCT.update();
   CensusTractsOverlayLayer.bringToBack();
 }
 
@@ -84,35 +69,29 @@ function onEachFeature(feature, layer) {
   });
 }
 
-var info2 = L.control();
+var infoCT = L.control();
 
-info2.onAdd = function(map2) {
-  this._div = L.DomUtil.create('div', 'info DU');
+infoCT.onAdd = function(map) {
+  this._div = L.DomUtil.create('div', 'infoCT');
   this.update();
   return this._div;
 };
 
-info2.update = function(properties) {
-  this._div.innerHTML = '<h4>New Residential Dwelling Units <br> Created in Last 15 Years</h4>' +
-    (properties ? '<b>Census Tract ' + properties.CTLabel + '</b><br>' + properties.Res_Units + ' Dwelling Units' :
-      'Hover Over a Census Tract');
-};
+infoCT.update = function(props) {
+  this._div.innerHTML = '<h4>Population % Change <br> Between ACS Survey Years <br> 2006 - 2010 & 2012 - 2016</h4>' +
+    (props ? '<b>' + 'Census Tract' + " " + props.CTLabel + '</b><br />' + props.Change + 'Population % Change' : 'Hover Over a Census Tract');
+  };
 
-info2.addTo(map);
+infoCT.addTo(map);
 
-CensusTractsOverlayLayer = L.geoJson(StudyAreaCensusTracts, {
-  style: style,
-  onEachFeature: onEachFeature
-}).addTo(map);
+var legendCT = L.control(
+  {
+    position: 'bottomright'
+  });
 
-// Creating First Choropleth Legend
-var Choroplethlegend = L.control({
-  position: 'bottomright'
-});
+legendCT.onAdd = function(map) {
 
-Choroplethlegend.onAdd = function(map) {
-
-  var div = L.DomUtil.create('div', 'info legend population-legend'),
+  var div = L.DomUtil.create('div', 'legendCT'),
     grades = [-23, 1, 5, 10, 20, 160],
     labels = [],
     from, to;
@@ -123,7 +102,7 @@ Choroplethlegend.onAdd = function(map) {
     var to = grades[i + 1];
 
     labels.push(
-      '<i style="background:' + getColor(from + 1) + '"></i> ' +
+      '<i style="background:' + getCTColor(from + 1) + '"></i> ' +
       from + (to ? '&ndash;' + to : '+'));
   })
 
@@ -131,72 +110,39 @@ Choroplethlegend.onAdd = function(map) {
   return div;
 };
 
-Choroplethlegend.addTo(map);
+legendCT.addTo(map);
 
-// Creating Second Choropleth Map - New Residential DUs
-// Control that Shows DU Info on Hover
-// var info2 = L.control();
-//
-// info2.onAdd = function(map2) {
-//   this._div = L.DomUtil.create('div', 'info DU');
-//   this.update();
-//   return this._div;
-// };
-//
-// info2.update = function(properties) {
-//   this._div.innerHTML = '<h4>New Residential Dwelling Units <br> Created in Last 15 Years</h4>' +
-//     (properties ? '<b>Census Tract ' + properties.CTLabel + '</b><br>' + properties.Res_Units + ' Dwelling Units' :
-//       'Hover Over a Census Tract');
-// };
-//
-// info2.addTo(map);
+// passing dwelling unit layer
+var DUsLayer = L.geoJson(StudyAreaCensusTracts, {
+  style: styleDU,
+  onEachFeature: onEachFeatureDU,
+})
 
-// var info = L.control();
-//
-// info.onAdd = function(map) {
-//   this._div = L.DomUtil.create('div', 'info');
-//   this.update();
-//   return this._div;
-// };
-//
-// info.update = function(props) {
-//   this._div.innerHTML = '<h4>Population % Change <br> Between ACS Survey Years <br> 2006 - 2010 & 2012 - 2016</h4>' +
-//     (props ? '<b>' + 'Census Tract' + " " + props.CTLabel + '</b><br />' + props.Change + '% Change' :
-//       'Hover Over a Census Tract');
-// };
-//
-// info.addTo(map);
-
-// hiding the Info DU by Default
-$('.infodu').hide()
-
-// Creating function that returns a color based on the values
-function getColor2(Res_Units) {
-  console.log(Res_Units)
-  return Res_Units < 100 ? '#d7191c' :
-    Res_Units < 300 ? '#fdae61' :
-    Res_Units < 500 ? '#ffffbf' :
-    Res_Units < 700 ? '#a6d96a' :
-    Res_Units < 1710 ? '#1a9641' :
-    '#FFEDA0';
+function getResColor(Res_Units) {
+  return  Res_Units < 100  ? '#d7191c' :
+          Res_Units < 300  ? '#fdae61' :
+          Res_Units < 500  ? '#ffffbf' :
+          Res_Units < 700  ? '#a6d96a' :
+          Res_Units < 1710 ? '#1a9641' :
+                             '#FFEDA0';
 }
 
-function style2(feature) {
+function styleDU(feature) {
   return {
     weight: 2,
     opacity: 1,
     color: 'white',
     dashArray: '3',
     fillOpacity: 0.7,
-    fillColor: getColor2(feature.properties.Res_Units)
+    fillColor: getResColor(feature.properties.Res_Units)
   };
 }
 
-// Creating Highlight on Hover
-function highlightFeature2(e) {
-  var layer2 = e.target;
+// creating onEachFeature functions
+function highlightFeatureDU(e) {
+  var layerDU = e.target;
 
-  layer2.setStyle({
+  layerDU.setStyle({
     weight: 5,
     color: '#666',
     dashArray: '',
@@ -204,65 +150,58 @@ function highlightFeature2(e) {
   });
 
   if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-  	layer2.bringToFront();
+  	layerDU.bringToFront();
   }
 
-  info2.update(layer.feature.properties);
+  infoDU.update(layerDU.feature.properties);
 }
 
-var DUsLayer;
-
-function resetHighlight2(e) {
+function resetHighlightDU(e) {
   DUsLayer.resetStyle(e.target);
-  info2.update();
+  infoDU.update();
   DUsLayer.bringToBack();
 }
 
-function zoomToFeature2(e) {
+function zoomToFeatureDU(e) {
   map.fitBounds(e.target.getBounds());
 }
 
-function onEachFeature2(feature, layer) {
+function onEachFeatureDU(feature, layer) {
   layer.on({
-    mouseover: highlightFeature2,
-    mouseout: resetHighlight2,
-    click: zoomToFeature2
+    mouseover: highlightFeatureDU,
+    mouseout: resetHighlightDU,
+    click: zoomToFeatureDU,
   });
 }
 
-DUsLayer = L.geoJson(StudyAreaCensusTracts, {
-  style: style2,
-  onEachFeature: onEachFeature2
-})
+// creating infoDU that shows change in number of dwelling units
+var infoDU = L.control();
 
-// Calling on infodivs to show or hide based on baselayer change
-map.on('baselayerchange', handleLayerToggle2);
+  infoDU.onAdd = function(map2) {
+  this._div = L.DomUtil.create('div', 'infoDU');
+  this.update();
+  return this._div;
+};
 
-function handleLayerToggle2(eventLayer) {
-  $('.info').hide()
-  var name = eventLayer.name
-  if (name === 'New Dwelling Units by Census Tract') {
-    $('.infodu').show()
-  }
-  if (name === 'Population Change') {
-    $('.info').show()
-  }
-  if (name === 'Population Change') {
-    $('.infodu').hide()
-  }
-  if (name === 'Study Area') {
-    $('.infodu').hide()
-  }
-}
+infoDU.update = function(properties) {
+  this._div.innerHTML = '<h4>New Residential Dwelling Units <br> Created in Last 15 Years</h4>' +
+    (properties ? '<b>Census Tract ' + properties.CTLabel + '</b><br>' + properties.Res_Units + ' Dwelling Units Created ' :
+      'Hover Over a Census Tract');
+};
+
+infoDU.addTo(map);
+
+// hiding the Info DU by Default
+$('.infoDU').hide()
 
 // Second Choropleth Legend
-var Choroplethlegend2 = L.control({
+var legendDU = L.control({
   position: 'bottomright'
 });
 
-Choroplethlegend2.onAdd = function(map) {
+legendDU.onAdd = function(map) {
 
-  var div = L.DomUtil.create('div', 'info legend du-legend'),
+  var div = L.DomUtil.create('div', 'legendDU'),
     grades = [0, 100, 300, 500, 700, 1709],
     labels = [],
     from, to;
@@ -273,7 +212,7 @@ Choroplethlegend2.onAdd = function(map) {
     var to = grades[i + 1];
 
     labels.push(
-      '<i style="background:' + getColor2(from + 1) + '"></i> ' +
+      '<i style="background:' + getResColor(from + 1) + '"></i> ' +
       from + (to ? '&ndash;' + to : '+'));
   })
 
@@ -281,10 +220,10 @@ Choroplethlegend2.onAdd = function(map) {
   return div;
 };
 
-Choroplethlegend2.addTo(map);
+legendDU.addTo(map);
 
 // hiding the DU Legend by Default
-$('.du-legend').hide()
+$('.legendDU').hide()
 
 // Adding all Point Data
 var OfficePoints = {
@@ -469,16 +408,42 @@ var overlays = {
 L.control.layers(baselayers, overlays).addTo(map);
 
 // Calling on legends to show or hide
-map.on('baselayerchange', handleLayerToggle);
-
-function handleLayerToggle(eventLayer) {
-  $('.legend').hide()
-  var name = eventLayer.name
-  if (name === 'New Dwelling Units by Census Tract') {
-    $('.du-legend').show()
+// function that shows & hides info divs based on which layer is on
+map.on('baselayerchange', function(eventLayer) {
+  if (eventLayer.name === 'Population Change'){
+  	$('.infoDU').hide()
   }
-  if (name === 'Population Change') {
-    $('.population-legend').show()
+	if (eventLayer.name === 'Population Change'){
+		$('.legendDU').hide()
+	}
+  if (eventLayer.name === 'Population Change'){
+  	$('.infoCT').show()
   }
-
-}
+	if (eventLayer.name === 'Population Change'){
+		$('.legendCT').show()
+	}
+  if (eventLayer.name === 'New Dwelling Units by Census Tract'){
+    $(".infoCT").hide()
+  }
+  if (eventLayer.name === 'New Dwelling Units by Census Tract'){
+    $(".legendCT").hide()
+  }
+  if (eventLayer.name === 'New Dwelling Units by Census Tract'){
+  	$('.infoDU').show()
+  }
+	if (eventLayer.name === 'New Dwelling Units by Census Tract'){
+		$('.legendDU').show()
+	}
+  if (eventLayer.name === 'Study Area'){
+    $('.legendDU').hide()
+  }
+  if (eventLayer.name === 'Study Area'){
+    $('.infoDU').hide()
+  }
+  if (eventLayer.name === 'Study Area'){
+    $('.legendCT').hide()
+  }
+  if (eventLayer.name === 'Study Area'){
+    $('.infoCT').hide()
+  }
+});
