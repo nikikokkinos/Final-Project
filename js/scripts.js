@@ -13,6 +13,7 @@ var CensusTractsOverlayLayer = L.geoJson(StudyAreaCensusTracts, {
   onEachFeature: onEachFeature
 }).addTo(map);
 
+// a function which assigns a color based on % of population change property
 function getCTColor(Change) {
   return Change < 1   ? '#d7191c' :
          Change < 6   ? '#fdae61' :
@@ -22,6 +23,7 @@ function getCTColor(Change) {
                         '#FFEDA0';
 }
 
+// a function which styles each CT based on the above function
 function style(feature) {
   return {
     weight: 2,
@@ -69,6 +71,7 @@ function onEachFeature(feature, layer) {
   });
 }
 
+// creating a new control that holds the ct layer's info and updates based on mouse events
 var infoCT = L.control();
 
 infoCT.onAdd = function(map) {
@@ -84,6 +87,7 @@ infoCT.update = function(props) {
 
 infoCT.addTo(map);
 
+// creating a new control that loops through density grades to act as a leged
 var legendCT = L.control(
   {
     position: 'bottomright'
@@ -118,6 +122,7 @@ var DUsLayer = L.geoJson(StudyAreaCensusTracts, {
   onEachFeature: onEachFeatureDU,
 })
 
+// creating a function that colors each CT by the # of new dwelling untis built
 function getResColor(Res_Units) {
   return  Res_Units < 100  ? '#d7191c' :
           Res_Units < 300  ? '#fdae61' :
@@ -127,6 +132,7 @@ function getResColor(Res_Units) {
                              '#FFEDA0';
 }
 
+// creating a function which styles each CT based on the above function
 function styleDU(feature) {
   return {
     weight: 2,
@@ -194,7 +200,7 @@ infoDU.addTo(map);
 // hiding the Info DU by Default
 $('.infoDU').hide()
 
-// Second Choropleth Legend
+// creating a new control that loops through density grades to act as a leged
 var legendDU = L.control({
   position: 'bottomright'
 });
@@ -397,11 +403,11 @@ var baselayers = {
 }
 
 var overlays = {
-  "New Office": OfficeOverlay,
-  "New Residential": ResidentialOverlay,
-  "New Retail": RetailOverlay,
-  "New Storage": StorageOverlay,
-  "New Factory": FactoryOverlay,
+  "New Office":       OfficeOverlay,
+  "New Residential":  ResidentialOverlay,
+  "New Retail":       RetailOverlay,
+  "New Storage":      StorageOverlay,
+  "New Factory":      FactoryOverlay,
   "Zoning Map Amendments": RezonedAreaOverlay,
 };
 
